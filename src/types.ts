@@ -6,7 +6,8 @@ export interface Course {
     professorEmail?: string;
     taName?: string;
     taEmail?: string;
-    gradeScale?: { [key: string]: number }; // Letter grade thresholds, e.g., { 'A': 95, 'A-': 90, ... }
+    gradeScale?: { [key: string]: number }; // Letter grade thresholds
+    credits?: number; // Number of credits, default 4
 }
 
 export interface Note {

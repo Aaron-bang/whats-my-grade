@@ -67,8 +67,8 @@ function App() {
   ]);
 
   // Handlers
-  const handleAddCourse = (name: string, color: string) => {
-    const newCourse: Course = { id: generateId(), name, color };
+  const handleAddCourse = (name: string, color: string, credits: number) => {
+    const newCourse: Course = { id: generateId(), name, color, credits };
     setCourses([...courses, newCourse]);
     setSelectedCourseId(newCourse.id);
   };
@@ -77,8 +77,8 @@ function App() {
     setCourses(courses.map(c => c.id === id ? { ...c, ...updates } : c));
   };
 
-  const handleEditCourse = (id: string, name: string, color: string) => {
-    handleUpdateCourse(id, { name, color });
+  const handleEditCourse = (id: string, name: string, color: string, credits: number) => {
+    handleUpdateCourse(id, { name, color, credits });
   };
 
   const handleAddNote = () => {

@@ -22,10 +22,12 @@ A comprehensive course management application built with React, TypeScript, and 
 ### 📊 Grade Tracking & Analytics
 - **Assignment Groups**: Organize assignments into weighted categories (e.g., Problem Sets, Exams, Quizzes)
 - **Customizable Grade Scales**: Set custom letter grade thresholds for each course
+- **Credit Hours**: Set credit hours for each course (default 4) for accurate GPA weighting
 - **Automatic Calculations**:
   - Individual assignment percentages and letter grades
   - Group averages with letter grades
   - Overall course grade with letter grades
+  - **Weighted GPA**: Calculates overall GPA based on course grades and credit hours
   - Weighted grade calculations based on group weights
 - **Opt-out Feature**: Exclude specific assignments from grade calculations
 

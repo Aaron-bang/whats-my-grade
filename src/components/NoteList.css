@@ -1,0 +1,114 @@
+.note-list-container {
+    padding: 24px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+.section-header h3 {
+    font-size: 1.5rem;
+    color: var(--dark);
+}
+
+.add-btn {
+    background-color: var(--secondary);
+    color: white;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: opacity 0.2s;
+}
+
+.add-btn:hover {
+    opacity: 0.9;
+}
+
+.notes-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+    overflow-y: auto;
+    padding-bottom: 20px;
+}
+
+.note-card {
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    padding: 16px;
+    box-shadow: var(--shadow-sm);
+    display: flex;
+    flex-direction: column;
+    height: 250px;
+    transition: transform 0.2s, box-shadow 0.2s;
+    border: 1px solid transparent;
+}
+
+.note-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+    border-color: var(--secondary);
+}
+
+.note-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 12px;
+}
+
+.note-title-input {
+    font-size: 1.1rem;
+    font-weight: 600;
+    border: none;
+    width: 100%;
+    color: var(--dark);
+    background: transparent;
+}
+
+.delete-note-btn {
+    background: transparent;
+    color: #ccc;
+    font-size: 1.5rem;
+    padding: 0 8px;
+    line-height: 1;
+    margin-left: 8px;
+}
+
+.delete-note-btn:hover {
+    color: #ff4d4d;
+}
+
+.note-content-input {
+    flex: 1;
+    border: none;
+    resize: none;
+    width: 100%;
+    font-size: 0.95rem;
+    color: var(--text);
+    background: transparent;
+    line-height: 1.5;
+}
+
+.note-footer {
+    margin-top: 12px;
+    font-size: 0.8rem;
+    color: #888;
+    text-align: right;
+}
+
+.empty-state {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 40px;
+    color: #888;
+    background: rgba(0, 0, 0, 0.02);
+    border-radius: var(--radius);
+    border: 2px dashed var(--gray);
+}

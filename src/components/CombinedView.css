@@ -1,0 +1,16 @@
+.combined-view {
+    display: flex;
+    height: 100%;
+    overflow: hidden;
+}
+
+.combined-left {
+    flex: 1;
+    border-right: 1px solid var(--gray);
+    overflow: hidden;
+}
+
+.combined-right {
+    flex: 1;
+    overflow: hidden;
+}

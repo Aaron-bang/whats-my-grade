@@ -1,0 +1,93 @@
+.trash-container {
+    padding: 24px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.trash-header {
+    margin-bottom: 24px;
+}
+
+.trash-header h2 {
+    font-size: 1.8rem;
+    color: var(--dark);
+    margin-bottom: 8px;
+}
+
+.trash-header p {
+    color: #888;
+}
+
+.trash-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+    overflow-y: auto;
+    padding-bottom: 20px;
+}
+
+.trash-card {
+    background: #f9f9f9;
+    border-radius: var(--radius);
+    padding: 16px;
+    border: 1px solid var(--gray);
+    display: flex;
+    flex-direction: column;
+    height: 200px;
+}
+
+.trash-card-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 12px;
+    font-size: 0.8rem;
+}
+
+.course-tag {
+    background: var(--gray);
+    padding: 2px 8px;
+    border-radius: 4px;
+    color: var(--text);
+}
+
+.trash-card h4 {
+    margin-bottom: 8px;
+    color: var(--dark);
+}
+
+.trash-preview {
+    flex: 1;
+    font-size: 0.9rem;
+    color: #666;
+    overflow: hidden;
+    margin-bottom: 12px;
+}
+
+.trash-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.trash-actions button {
+    flex: 1;
+    padding: 8px;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: opacity 0.2s;
+}
+
+.restore-btn {
+    background: var(--secondary);
+    color: white;
+}
+
+.delete-forever-btn {
+    background: #ff4d4d;
+    color: white;
+}
+
+.trash-actions button:hover {
+    opacity: 0.9;
+}

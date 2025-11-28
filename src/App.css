@@ -68,9 +68,15 @@
 
 .course-info {
   display: flex;
+  flex-direction: row;
+  gap: 12px;
+  align-items: center;
+}
+
+.info-content {
+  display: flex;
   flex-direction: column;
   gap: 8px;
-  align-items: flex-end;
 }
 
 .info-group {
@@ -107,4 +113,63 @@
 
 .info-input.email {
   width: 180px;
+}
+
+.info-display {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.info-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.9rem;
+}
+
+.info-row .info-label {
+  font-weight: 600;
+  min-width: 70px;
+  text-align: right;
+  color: #666;
+}
+
+.info-row .info-value {
+  color: #333;
+}
+
+.info-email {
+  color: #666;
+  font-size: 0.85rem;
+  font-style: italic;
+}
+
+.edit-info-btn,
+.save-info-btn {
+  background: transparent;
+  border: 1px solid #ccc;
+  padding: 4px 12px;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  color: #666;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.edit-info-btn:hover,
+.save-info-btn:hover {
+  background: rgba(0, 0, 0, 0.05);
+  border-color: #999;
+}
+
+.save-info-btn {
+  background: var(--primary);
+  color: white;
+  border-color: var(--primary);
+}
+
+.save-info-btn:hover {
+  background: #e85d5d;
+  border-color: #e85d5d;
 }

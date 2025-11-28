@@ -6,6 +6,7 @@ export interface Course {
     professorEmail?: string;
     taName?: string;
     taEmail?: string;
+    gradeScale?: { [key: string]: number }; // Letter grade thresholds, e.g., { 'A': 95, 'A-': 90, ... }
 }
 
 export interface Note {

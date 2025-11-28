@@ -1,5 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import type { Task, AssignmentGroup } from '../types';
+import { GradeScaleModal } from './GradeScaleModal';
+import { calculateLetterGrade } from '../utils/gradeUtils';
 import './TaskList.css';
 
 interface TaskListProps {
@@ -13,6 +15,8 @@ interface TaskListProps {
     onUpdateGroup: (id: string, name: string, weight: number) => void;
     onDeleteGroup: (id: string) => void;
     courseGrade?: number;
+    gradeScale?: { [key: string]: number };
+    onUpdateGradeScale?: (gradeScale: { [key: string]: number }) => void;
 }
 
 export const TaskList: React.FC<TaskListProps> = ({
@@ -25,7 +29,9 @@ export const TaskList: React.FC<TaskListProps> = ({
     onAddGroup,
     onUpdateGroup,
     onDeleteGroup,
-    courseGrade
+    courseGrade,
+    gradeScale,
+    onUpdateGradeScale
 }) => {
     const [newTaskText, setNewTaskText] = useState('');
     const [newTaskDate, setNewTaskDate] = useState('');
@@ -41,6 +47,7 @@ export const TaskList: React.FC<TaskListProps> = ({
     const [editGroupWeight, setEditGroupWeight] = useState(0);
     const [editTaskDate, setEditTaskDate] = useState('');
     const [editTaskOptOut, setEditTaskOptOut] = useState(false);
+    const [isGradeScaleModalOpen, setIsGradeScaleModalOpen] = useState(false);
     const editDescriptionRef = useRef<HTMLTextAreaElement | null>(null);
 
     useEffect(() => {
@@ -103,12 +110,20 @@ export const TaskList: React.FC<TaskListProps> = ({
                     {courseGrade !== undefined && (
                         <div className="course-grade-display">
                             Course Grade: <span className="grade-value">{courseGrade.toFixed(1)}%</span>
+                            {gradeScale && (
+                                <span className="letter-grade-badge">{calculateLetterGrade(courseGrade, gradeScale)}</span>
+                            )}
                         </div>
                     )}
                 </div>
-                <button className="add-group-btn" onClick={() => setIsAddingGroup(true)}>
-                    + Add Group
-                </button>
+                <div className="header-buttons">
+                    <button className="grade-scale-btn" onClick={() => setIsGradeScaleModalOpen(true)}>
+                        📊 Grade Scale
+                    </button>
+                    <button className="add-group-btn" onClick={() => setIsAddingGroup(true)}>
+                        + Add Group
+                    </button>
+                </div>
             </div>
 
             {isAddingGroup && (
@@ -226,7 +241,12 @@ export const TaskList: React.FC<TaskListProps> = ({
                                         <div className="group-info">
                                             <span className="group-weight">{group.weight}%</span>
                                             {groupAverage !== null && (
-                                                <span className="group-average">Avg: {groupAverage.toFixed(1)}%</span>
+                                                <>
+                                                    <span className="group-average">Avg: {groupAverage.toFixed(1)}%</span>
+                                                    {gradeScale && (
+                                                        <span className="letter-grade-badge small">{calculateLetterGrade(groupAverage, gradeScale)}</span>
+                                                    )}
+                                                </>
                                             )}
                                             <button
                                                 className="delete-group-btn"
@@ -431,7 +451,12 @@ export const TaskList: React.FC<TaskListProps> = ({
                                                     </div>
                                                 )}
                                                 {percentage && (
-                                                    <span className="task-grade">{percentage}%</span>
+                                                    <>
+                                                        <span className="task-grade">{percentage}%</span>
+                                                        {gradeScale && (
+                                                            <span className="letter-grade-badge small">{calculateLetterGrade(Number(percentage), gradeScale)}</span>
+                                                        )}
+                                                    </>
                                                 )}
                                             </div>
                                             {/* Grade inputs - only show when completed */}
@@ -484,6 +509,13 @@ export const TaskList: React.FC<TaskListProps> = ({
                     </div>
                 )}
             </div>
+
+            <GradeScaleModal
+                isOpen={isGradeScaleModalOpen}
+                onClose={() => setIsGradeScaleModalOpen(false)}
+                onSave={(scale) => onUpdateGradeScale?.(scale)}
+                initialGradeScale={gradeScale}
+            />
         </div>
     );
 };

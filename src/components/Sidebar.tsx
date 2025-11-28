@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import type { Course } from '../types';
+import { calculateLetterGrade } from '../utils/gradeUtils';
 import './Sidebar.css';
 
 interface SidebarProps {
@@ -102,12 +103,21 @@ export const Sidebar: React.FC<SidebarProps> = ({ courses, selectedCourseId, onS
                             style={{ borderLeftColor: course.color }}
                         >
                             <span className="course-dot" style={{ backgroundColor: course.color }}></span>
-                            <span className="course-name">{course.name}</span>
-                            {getCourseGrade && getCourseGrade(course.id) !== undefined && (
-                                <span className="course-grade-badge">
-                                    {getCourseGrade(course.id)!.toFixed(1)}%
-                                </span>
-                            )}
+                            <div className="course-item-content">
+                                <span className="course-name">{course.name}</span>
+                                {getCourseGrade && getCourseGrade(course.id) !== undefined && (
+                                    <div className="course-grade-display">
+                                        <span className="course-grade-text">
+                                            {getCourseGrade(course.id)!.toFixed(1)}%
+                                        </span>
+                                        {course.gradeScale && (
+                                            <span className="sidebar-letter-grade">
+                                                {' '}({calculateLetterGrade(getCourseGrade(course.id)!, course.gradeScale)})
+                                            </span>
+                                        )}
+                                    </div>
+                                )}
+                            </div>
                             <button
                                 className="edit-course-btn"
                                 onClick={(e) => {

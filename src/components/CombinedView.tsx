@@ -19,6 +19,8 @@ interface CombinedViewProps {
     onUpdateGroup: (id: string, name: string, weight: number) => void;
     onDeleteGroup: (id: string) => void;
     courseGrade?: number;
+    gradeScale?: { [key: string]: number };
+    onUpdateGradeScale?: (gradeScale: { [key: string]: number }) => void;
 }
 
 export const CombinedView: React.FC<CombinedViewProps> = ({
@@ -35,7 +37,9 @@ export const CombinedView: React.FC<CombinedViewProps> = ({
     onAddGroup,
     onUpdateGroup,
     onDeleteGroup,
-    courseGrade
+    courseGrade,
+    gradeScale,
+    onUpdateGradeScale
 }) => {
     return (
         <div className="combined-view">
@@ -59,6 +63,8 @@ export const CombinedView: React.FC<CombinedViewProps> = ({
                     onUpdateGroup={onUpdateGroup}
                     onDeleteGroup={onDeleteGroup}
                     courseGrade={courseGrade}
+                    gradeScale={gradeScale}
+                    onUpdateGradeScale={onUpdateGradeScale}
                 />
             </div>
         </div>

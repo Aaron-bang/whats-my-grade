@@ -17,6 +17,7 @@ function App() {
     { id: '3', name: 'CSCI 228', color: '#FFE66D' }
   ]);
   const [selectedCourseId, setSelectedCourseId] = useState<string | null>('1');
+  const [isEditingInfo, setIsEditingInfo] = useState(false);
 
   const [notes, setNotes] = useState<Note[]>([
     { id: 'n1', courseId: '1', title: 'Lecture 1', content: 'Derivatives are...', createdAt: Date.now() },
@@ -155,6 +156,11 @@ function App() {
     setAssignmentGroups(assignmentGroups.filter(g => g.id !== id));
   };
 
+  const handleUpdateGradeScale = (gradeScale: { [key: string]: number }) => {
+    if (!selectedCourseId || selectedCourseId === 'all-tasks' || selectedCourseId === 'trash') return;
+    handleUpdateCourse(selectedCourseId, { gradeScale });
+  };
+
   // Calculate course grade based on group weights
   const calculateCourseGrade = (courseId: string): number | undefined => {
     const courseGroups = assignmentGroups.filter(g => g.courseId === courseId);
@@ -229,40 +235,67 @@ function App() {
               <h1 style={{ color: currentCourse.color }}>{currentCourse.name}</h1>
             </div>
             <div className="course-info">
-              <div className="info-group">
-                <label>Professor:</label>
-                <input
-                  type="text"
-                  placeholder="Name"
-                  value={currentCourse.professorName || ''}
-                  onChange={(e) => handleUpdateCourse(currentCourse.id, { professorName: e.target.value })}
-                  className="info-input"
-                />
-                <input
-                  type="text"
-                  placeholder="Email"
-                  value={currentCourse.professorEmail || ''}
-                  onChange={(e) => handleUpdateCourse(currentCourse.id, { professorEmail: e.target.value })}
-                  className="info-input email"
-                />
-              </div>
-              <div className="info-group">
-                <label>TA:</label>
-                <input
-                  type="text"
-                  placeholder="Name"
-                  value={currentCourse.taName || ''}
-                  onChange={(e) => handleUpdateCourse(currentCourse.id, { taName: e.target.value })}
-                  className="info-input"
-                />
-                <input
-                  type="text"
-                  placeholder="Email"
-                  value={currentCourse.taEmail || ''}
-                  onChange={(e) => handleUpdateCourse(currentCourse.id, { taEmail: e.target.value })}
-                  className="info-input email"
-                />
-              </div>
+              {isEditingInfo ? (
+                <>
+                  <div className="info-content">
+                    <div className="info-group">
+                      <label>Professor:</label>
+                      <input
+                        type="text"
+                        placeholder="Name"
+                        value={currentCourse.professorName || ''}
+                        onChange={(e) => handleUpdateCourse(currentCourse.id, { professorName: e.target.value })}
+                        className="info-input"
+                      />
+                      <input
+                        type="text"
+                        placeholder="Email"
+                        value={currentCourse.professorEmail || ''}
+                        onChange={(e) => handleUpdateCourse(currentCourse.id, { professorEmail: e.target.value })}
+                        className="info-input email"
+                      />
+                    </div>
+                    <div className="info-group">
+                      <label>TA:</label>
+                      <input
+                        type="text"
+                        placeholder="Name"
+                        value={currentCourse.taName || ''}
+                        onChange={(e) => handleUpdateCourse(currentCourse.id, { taName: e.target.value })}
+                        className="info-input"
+                      />
+                      <input
+                        type="text"
+                        placeholder="Email"
+                        value={currentCourse.taEmail || ''}
+                        onChange={(e) => handleUpdateCourse(currentCourse.id, { taEmail: e.target.value })}
+                        className="info-input email"
+                      />
+                    </div>
+                  </div>
+                  <button className="save-info-btn" onClick={() => setIsEditingInfo(false)}>Save</button>
+                </>
+              ) : (
+                <>
+                  <div className="info-display">
+                    <div className="info-row">
+                      <span className="info-label">Professor:</span>
+                      <span className="info-value">
+                        {currentCourse.professorName || 'Not set'}
+                        {currentCourse.professorEmail && <span className="info-email"> ({currentCourse.professorEmail})</span>}
+                      </span>
+                    </div>
+                    <div className="info-row">
+                      <span className="info-label">TA:</span>
+                      <span className="info-value">
+                        {currentCourse.taName || 'Not set'}
+                        {currentCourse.taEmail && <span className="info-email"> ({currentCourse.taEmail})</span>}
+                      </span>
+                    </div>
+                  </div>
+                  <button className="edit-info-btn" onClick={() => setIsEditingInfo(true)}>✏️</button>
+                </>
+              )}
             </div>
           </header>
 
@@ -282,6 +315,8 @@ function App() {
               onUpdateGroup={handleUpdateGroup}
               onDeleteGroup={handleDeleteGroup}
               courseGrade={courseGrade}
+              gradeScale={currentCourse.gradeScale}
+              onUpdateGradeScale={handleUpdateGradeScale}
             />
           </div>
         </>
@@ -300,7 +335,10 @@ function App() {
       <Sidebar
         courses={courses}
         selectedCourseId={selectedCourseId}
-        onSelectCourse={setSelectedCourseId}
+        onSelectCourse={(id) => {
+          setSelectedCourseId(id);
+          setIsEditingInfo(false);
+        }}
         onAddCourse={handleAddCourse}
         onEditCourse={handleEditCourse}
         getCourseGrade={calculateCourseGrade}

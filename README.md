@@ -1,73 +1,157 @@
-# React + TypeScript + Vite
+# Course Management & Grade Tracker
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A comprehensive course management application built with React, TypeScript, and Vite. Track your courses, assignments, grades, and notes all in one place with customizable grading scales and detailed analytics.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+### 📚 Course Management
+- Create and manage multiple courses with custom colors
+- Edit course details including professor and TA information
+- View all courses in an organized sidebar with grade displays
+- Color-coded course identification
 
-## React Compiler
+### 📝 Notes & Assignments
+- **Notes**: Create and organize lecture notes for each course
+- **Assignments**: Track assignments with detailed information:
+  - Assignment titles and descriptions
+  - Due dates
+  - File attachments (PDFs and other documents)
+  - Completion status
+  - Graded scores
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### 📊 Grade Tracking & Analytics
+- **Assignment Groups**: Organize assignments into weighted categories (e.g., Problem Sets, Exams, Quizzes)
+- **Customizable Grade Scales**: Set custom letter grade thresholds for each course
+- **Automatic Calculations**:
+  - Individual assignment percentages and letter grades
+  - Group averages with letter grades
+  - Overall course grade with letter grades
+  - Weighted grade calculations based on group weights
+- **Opt-out Feature**: Exclude specific assignments from grade calculations
 
-## Expanding the ESLint configuration
+### 🎯 Advanced Features
+- **Letter Grade System**: 
+  - Customizable grade scale per course (A, A-, B+, B, B-, etc.)
+  - Automatic letter grade calculation and display
+  - Letter grades shown for assignments, groups, and overall course
+- **Grade Scale Modal**: Easy-to-use interface for setting minimum percentages for each letter grade
+- **Visual Grade Indicators**: Beautiful gradient badges for letter grades
+- **Trash System**: Soft delete for notes with restore capability
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## Getting Started
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+### Prerequisites
+- Node.js (v14 or higher)
+- npm or yarn
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+### Installation
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+1. Clone the repository:
+```bash
+git clone <repository-url>
+cd day2
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+2. Install dependencies:
+```bash
+npm install
 ```
+
+3. Start the development server:
+```bash
+npm run dev
+```
+
+4. Open your browser and navigate to `http://localhost:5173`
+
+### Build for Production
+
+```bash
+npm run build
+```
+
+The built files will be in the `dist` directory.
+
+## Usage Guide
+
+### Creating a Course
+1. Click "+ Add Class" in the sidebar
+2. Enter the course name and select a color
+3. Click "Add"
+
+### Setting Up Grade Scale
+1. Select a course
+2. Click "📊 Grade Scale" button in the Assignments section
+3. Set minimum percentages for each letter grade
+4. Click "Save"
+
+### Adding Assignment Groups
+1. Select a course
+2. Click "+ Add Group"
+3. Enter group name and weight percentage
+4. Click "Add"
+
+### Creating Assignments
+1. Select an assignment group from the dropdown
+2. Enter assignment title
+3. Optionally set a due date
+4. Click "+" to add
+5. Click on the assignment to edit details, add description, or attach files
+
+### Grading Assignments
+1. Check the assignment as completed
+2. Enter earned score and total score
+3. Letter grade will automatically appear based on your grade scale
+
+### Adding Professor/TA Information
+1. Select a course
+2. Click the "Edit" button (✏️) next to the course info at the top
+3. Fill in professor and TA names and emails
+4. Click "Save"
+
+## Technology Stack
+
+- **React 18** - UI framework
+- **TypeScript** - Type safety
+- **Vite** - Build tool and dev server
+- **CSS3** - Styling with custom properties
+
+## Project Structure
+
+```
+src/
+├── components/          # React components
+│   ├── Sidebar.tsx     # Course navigation
+│   ├── CombinedView.tsx # Main content area
+│   ├── TaskList.tsx    # Assignment management
+│   ├── NoteList.tsx    # Note management
+│   ├── GradeScaleModal.tsx # Grade scale editor
+│   └── ...
+├── utils/              # Utility functions
+│   └── gradeUtils.ts   # Grade calculation logic
+├── types.ts            # TypeScript type definitions
+├── App.tsx             # Main application component
+└── main.tsx            # Application entry point
+```
+
+## Features in Detail
+
+### Grade Calculation
+- Weighted average based on assignment group weights
+- Excludes opted-out assignments
+- Handles partial grading (only counts graded assignments)
+- Automatic letter grade assignment based on custom thresholds
+
+### Data Persistence
+Currently, all data is stored in component state. For production use, consider adding:
+- Local storage persistence
+- Backend API integration
+- Database storage
+
+## Contributing
+
+Feel free to submit issues and enhancement requests!
+
+## License
+
+MIT License - feel free to use this project for personal or educational purposes.

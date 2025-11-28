@@ -59,8 +59,26 @@
     font-weight: 600;
 }
 
-.course-name {
+.course-item-content {
     flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.course-name {
+    font-weight: 500;
+    color: var(--dark);
+}
+
+.course-grade-display {
+    font-size: 0.8rem;
+    color: #666;
+}
+
+.course-grade-text {
+    font-weight: 600;
+    color: var(--secondary);
 }
 
 .course-grade-badge {
@@ -195,4 +213,9 @@
 .add-actions button.confirm-btn {
     background: var(--primary);
     color: white;
+}
+
+.sidebar-letter-grade {
+    font-weight: 700;
+    color: #667eea;
 }

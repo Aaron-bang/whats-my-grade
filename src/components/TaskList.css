@@ -30,6 +30,25 @@
     color: var(--secondary);
 }
 
+.header-buttons {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+.grade-scale-btn {
+    background: var(--secondary);
+    color: white;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: opacity 0.2s;
+}
+
+.grade-scale-btn:hover {
+    opacity: 0.9;
+}
+
 .add-group-btn {
     background: var(--accent);
     color: var(--dark);
@@ -531,4 +550,23 @@
     margin-left: 8px;
     font-weight: normal;
     vertical-align: middle;
+}
+
+.letter-grade-badge {
+    display: inline-block;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    margin-left: 8px;
+    letter-spacing: 0.5px;
+    box-shadow: 0 2px 4px rgba(102, 126, 234, 0.3);
+}
+
+.letter-grade-badge.small {
+    font-size: 0.75rem;
+    padding: 2px 8px;
+    border-radius: 10px;
 }

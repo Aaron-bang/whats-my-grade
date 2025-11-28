@@ -14,7 +14,7 @@ function App() {
   const [courses, setCourses] = useState<Course[]>([
     { id: '1', name: 'MATH 101', color: '#FF6B6B' },
     { id: '2', name: 'HIST 105', color: '#4ECDC4' },
-    { id: '3', name: 'CSCI 226', color: '#FFE66D' }
+    { id: '3', name: 'CSCI 228', color: '#FFE66D' }
   ]);
   const [selectedCourseId, setSelectedCourseId] = useState<string | null>('1');
 

@@ -129,7 +129,13 @@
 
 .edit-actions {
     display: flex;
-    justify-content: flex-end;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+}
+
+.right-actions {
+    display: flex;
     gap: 8px;
 }
 
@@ -144,6 +150,16 @@
 .edit-actions button.confirm-btn {
     background: var(--primary);
     color: white;
+}
+
+.edit-actions button.delete-btn {
+    color: #E71D36;
+    padding-left: 0;
+}
+
+.edit-actions button.delete-btn:hover {
+    background: rgba(231, 29, 54, 0.1);
+    padding-left: 12px;
 }
 
 .course-dot {
@@ -282,4 +298,140 @@
     margin-bottom: 0 !important;
     padding: 6px 8px !important;
     text-align: center;
+}
+
+/* Semester Styles */
+.semester-group {
+    margin-bottom: 20px;
+}
+
+.semester-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 16px 8px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    margin-bottom: 8px;
+}
+
+.semester-title-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.edit-semester-btn {
+    opacity: 0;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 0.8rem;
+    padding: 2px;
+    transition: opacity 0.2s;
+}
+
+.semester-header:hover .edit-semester-btn {
+    opacity: 1;
+}
+
+.toggle-semester-btn {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 0.7rem;
+    padding: 4px;
+    color: #888;
+    transition: transform 0.2s;
+    margin-right: 4px;
+}
+
+.toggle-semester-btn:hover {
+    color: var(--dark);
+}
+
+.edit-semester-inline input {
+    width: 100%;
+    padding: 4px 8px;
+    border: 1px solid var(--primary);
+    border-radius: 4px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--dark);
+    text-transform: uppercase;
+}
+
+.semester-name {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.semester-gpa {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--primary);
+    background: rgba(78, 205, 196, 0.1);
+    padding: 2px 6px;
+    border-radius: 4px;
+}
+
+.semester-select-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.semester-select-group label {
+    font-size: 0.9rem;
+    color: #666;
+    font-weight: 500;
+}
+
+.semester-select {
+    flex: 1;
+    padding: 6px 8px;
+    border: 1px solid var(--gray);
+    border-radius: 8px;
+    font-size: 0.9rem;
+    background-color: white;
+}
+
+.sidebar-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.add-semester-btn {
+    width: 100%;
+    padding: 10px;
+    background-color: transparent;
+    color: var(--primary);
+    border: 1px dashed var(--primary);
+    border-radius: var(--radius);
+    font-weight: 600;
+    transition: all 0.2s;
+}
+
+.add-semester-btn:hover {
+    background-color: rgba(78, 205, 196, 0.1);
+}
+
+.add-semester-form {
+    background: #fff;
+    padding: 16px;
+    border-radius: var(--radius);
+    border: 1px solid var(--gray);
+    box-shadow: var(--shadow-md);
+}
+
+.add-semester-form input {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid var(--gray);
+    border-radius: 8px;
+    margin-bottom: 12px;
 }

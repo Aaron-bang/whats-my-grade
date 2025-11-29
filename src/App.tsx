@@ -3,7 +3,7 @@ import { Sidebar } from './components/Sidebar';
 import { CombinedView } from './components/CombinedView';
 import { AllTasks } from './components/AllTasks';
 import { Trash } from './components/Trash';
-import type { Course, Note, Task, AssignmentGroup } from './types';
+import type { Course, Note, Task, AssignmentGroup, Semester } from './types';
 import './App.css';
 
 // Simple ID generator
@@ -11,9 +11,13 @@ const generateId = () => Math.random().toString(36).substr(2, 9);
 
 function App() {
   // State
+  const [semesters, setSemesters] = useState<Semester[]>([
+    { id: 's1', name: 'Fall 2023', createdAt: Date.now() }
+  ]);
+
   const [courses, setCourses] = useState<Course[]>([
-    { id: '1', name: 'MATH 101', color: '#FF6B6B' },
-    { id: '2', name: 'HIST 105', color: '#4ECDC4' },
+    { id: '1', name: 'MATH 101', color: '#FF6B6B', semesterId: 's1' },
+    { id: '2', name: 'HIST 105', color: '#4ECDC4', semesterId: 's1' },
     { id: '3', name: 'CSCI 228', color: '#FFE66D' }
   ]);
   const [selectedCourseId, setSelectedCourseId] = useState<string | null>('1');
@@ -67,8 +71,17 @@ function App() {
   ]);
 
   // Handlers
-  const handleAddCourse = (name: string, color: string, credits: number) => {
-    const newCourse: Course = { id: generateId(), name, color, credits };
+  const handleAddSemester = (name: string) => {
+    const newSemester: Semester = { id: generateId(), name, createdAt: Date.now() };
+    setSemesters([newSemester, ...semesters]);
+  };
+
+  const handleEditSemester = (id: string, name: string) => {
+    setSemesters(semesters.map(s => s.id === id ? { ...s, name } : s));
+  };
+
+  const handleAddCourse = (name: string, color: string, credits: number, semesterId?: string) => {
+    const newCourse: Course = { id: generateId(), name, color, credits, semesterId };
     setCourses([...courses, newCourse]);
     setSelectedCourseId(newCourse.id);
   };
@@ -77,8 +90,17 @@ function App() {
     setCourses(courses.map(c => c.id === id ? { ...c, ...updates } : c));
   };
 
-  const handleEditCourse = (id: string, name: string, color: string, credits: number) => {
-    handleUpdateCourse(id, { name, color, credits });
+  const handleEditCourse = (id: string, name: string, color: string, credits: number, semesterId?: string) => {
+    handleUpdateCourse(id, { name, color, credits, semesterId });
+  };
+
+  const handleDeleteCourse = (id: string) => {
+    setCourses(prevCourses => prevCourses.map(c => c.id === id ? { ...c, deleted: true } : c));
+    if (selectedCourseId === id) setSelectedCourseId(null);
+  };
+
+  const handleRestoreCourse = (id: string) => {
+    setCourses(courses.map(c => c.id === id ? { ...c, deleted: false } : c));
   };
 
   const handleAddNote = () => {
@@ -106,19 +128,45 @@ function App() {
     setNotes(notes.map(n => n.id === id ? { ...n, deleted: false } : n));
   };
 
-  const handleDeleteForever = (id: string) => {
-    setNotes(notes.filter(n => n.id !== id));
+  const handleDeleteForever = (id: string, type: 'note' | 'course' | 'task') => {
+    if (type === 'note') {
+      setNotes(notes.filter(n => n.id !== id));
+    } else if (type === 'course') {
+      setCourses(courses.filter(c => c.id !== id));
+      // Also delete associated notes and tasks forever? Or keep them orphaned?
+      // Usually better to clean up.
+      setNotes(notes.filter(n => n.courseId !== id));
+      setTasks(tasks.filter(t => t.courseId !== id));
+      setAssignmentGroups(assignmentGroups.filter(g => g.courseId !== id));
+    } else if (type === 'task') {
+      setTasks(tasks.filter(t => t.id !== id));
+    }
   };
 
   const handleAddTask = (text: string, dueDate: string, groupId: string) => {
     if (!selectedCourseId || selectedCourseId === 'all-tasks' || selectedCourseId === 'trash') return;
+
+    let finalGroupId = groupId;
+
+    // If no group is selected, create a new group with the assignment name
+    if (!groupId || groupId === '') {
+      const newGroup: AssignmentGroup = {
+        id: generateId(),
+        courseId: selectedCourseId,
+        name: text,
+        weight: 0
+      };
+      setAssignmentGroups([...assignmentGroups, newGroup]);
+      finalGroupId = newGroup.id;
+    }
+
     const newTask: Task = {
       id: generateId(),
       courseId: selectedCourseId,
       text,
       dueDate,
       completed: false,
-      groupId
+      groupId: finalGroupId
     };
     setTasks([...tasks, newTask]);
   };
@@ -128,7 +176,11 @@ function App() {
   };
 
   const handleDeleteTask = (id: string) => {
-    setTasks(tasks.filter(t => t.id !== id));
+    setTasks(tasks.map(t => t.id === id ? { ...t, deleted: true } : t));
+  };
+
+  const handleRestoreTask = (id: string) => {
+    setTasks(tasks.map(t => t.id === id ? { ...t, deleted: false } : t));
   };
 
   const handleUpdateTask = (id: string, updates: Partial<Task>) => {
@@ -171,7 +223,7 @@ function App() {
     let totalWeight = 0;
 
     for (const group of courseGroups) {
-      const groupTasks = tasks.filter(t => t.groupId === group.id);
+      const groupTasks = tasks.filter(t => t.groupId === group.id && !t.deleted);
       const gradedTasks = groupTasks.filter(t =>
         t.earnedScore !== undefined &&
         t.totalScore !== undefined &&
@@ -201,30 +253,40 @@ function App() {
   // Views
   let mainContent;
 
+  const activeCourses = courses.filter(c => !c.deleted);
+  const activeTasks = tasks.filter(t => !t.deleted && !courses.find(c => c.id === t.courseId)?.deleted);
+
   if (selectedCourseId === 'all-tasks') {
     mainContent = (
       <AllTasks
-        tasks={tasks}
-        courses={courses}
+        tasks={activeTasks}
+        courses={activeCourses}
         onToggleTask={handleToggleTask}
         onDeleteTask={handleDeleteTask}
       />
     );
   } else if (selectedCourseId === 'trash') {
-    const deletedNotes = notes.filter(n => n.deleted);
+    const deletedNotes = notes.filter(n => n.deleted || courses.find(c => c.id === n.courseId)?.deleted);
+    const deletedCourses = courses.filter(c => c.deleted);
+    const deletedTasks = tasks.filter(t => t.deleted || courses.find(c => c.id === t.courseId)?.deleted);
+
     mainContent = (
       <Trash
         notes={deletedNotes}
-        courses={courses}
+        courses={courses} // Pass all courses to look up names
+        deletedCourses={deletedCourses}
+        deletedTasks={deletedTasks}
         onRestoreNote={handleRestoreNote}
+        onRestoreCourse={handleRestoreCourse}
+        onRestoreTask={handleRestoreTask}
         onDeleteForever={handleDeleteForever}
       />
     );
   } else {
-    const currentCourse = courses.find(c => c.id === selectedCourseId);
+    const currentCourse = activeCourses.find(c => c.id === selectedCourseId);
     if (selectedCourseId && currentCourse) {
       const courseNotes = notes.filter(n => n.courseId === selectedCourseId && !n.deleted);
-      const courseTasks = tasks.filter(t => t.courseId === selectedCourseId);
+      const courseTasks = tasks.filter(t => t.courseId === selectedCourseId && !t.deleted);
       const courseGroups = assignmentGroups.filter(g => g.courseId === selectedCourseId);
       const courseGrade = calculateCourseGrade(selectedCourseId);
 
@@ -334,6 +396,7 @@ function App() {
     <div className="app-container">
       <Sidebar
         courses={courses}
+        semesters={semesters}
         selectedCourseId={selectedCourseId}
         onSelectCourse={(id) => {
           setSelectedCourseId(id);
@@ -341,6 +404,9 @@ function App() {
         }}
         onAddCourse={handleAddCourse}
         onEditCourse={handleEditCourse}
+        onDeleteCourse={handleDeleteCourse}
+        onAddSemester={handleAddSemester}
+        onEditSemester={handleEditSemester}
         getCourseGrade={calculateCourseGrade}
       />
 

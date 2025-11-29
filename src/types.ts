@@ -1,3 +1,9 @@
+export interface Semester {
+    id: string;
+    name: string;
+    createdAt: number;
+}
+
 export interface Course {
     id: string;
     name: string;
@@ -8,6 +14,8 @@ export interface Course {
     taEmail?: string;
     gradeScale?: { [key: string]: number }; // Letter grade thresholds
     credits?: number; // Number of credits, default 4
+    semesterId?: string;
+    deleted?: boolean;
 }
 
 export interface Note {
@@ -31,6 +39,7 @@ export interface Task {
     groupId?: string; // Reference to assignment group
     attachments?: { name: string; dataUrl: string }[]; // PDF attachments
     optOut?: boolean;
+    deleted?: boolean;
 }
 
 export interface AssignmentGroup {

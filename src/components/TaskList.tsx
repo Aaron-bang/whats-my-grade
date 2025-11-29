@@ -60,10 +60,11 @@ export const TaskList: React.FC<TaskListProps> = ({
 
     const handleAddTask = (e: React.FormEvent) => {
         e.preventDefault();
-        if (newTaskText.trim() && selectedGroupId) {
+        if (newTaskText.trim()) {
             onAddTask(newTaskText, newTaskDate, selectedGroupId);
             setNewTaskText('');
             setNewTaskDate('');
+            setSelectedGroupId('');
         }
     };
 
@@ -153,7 +154,6 @@ export const TaskList: React.FC<TaskListProps> = ({
                     value={selectedGroupId}
                     onChange={(e) => setSelectedGroupId(e.target.value)}
                     className="group-select"
-                    required
                 >
                     <option value="">Select group...</option>
                     {groups.map(group => (

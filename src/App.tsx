@@ -3,7 +3,9 @@ import { Sidebar } from './components/Sidebar';
 import { CombinedView } from './components/CombinedView';
 import { AllTasks } from './components/AllTasks';
 import { Trash } from './components/Trash';
+import { GradesOverview } from './components/GradesOverview';
 import type { Course, Note, Task, AssignmentGroup, Semester } from './types';
+import { DEFAULT_GRADE_SCALE } from './utils/gradeUtils';
 import './App.css';
 
 // Simple ID generator
@@ -16,9 +18,9 @@ function App() {
   ]);
 
   const [courses, setCourses] = useState<Course[]>([
-    { id: '1', name: 'MATH 101', color: '#FF6B6B', semesterId: 's1' },
-    { id: '2', name: 'HIST 105', color: '#4ECDC4', semesterId: 's1' },
-    { id: '3', name: 'CSCI 228', color: '#FFE66D' }
+    { id: '1', name: 'MATH 101', color: '#FF6B6B', semesterId: 's1', gradeScale: DEFAULT_GRADE_SCALE },
+    { id: '2', name: 'HIST 105', color: '#4ECDC4', semesterId: 's1', gradeScale: DEFAULT_GRADE_SCALE },
+    { id: '3', name: 'CSCI 228', color: '#FFE66D', gradeScale: DEFAULT_GRADE_SCALE }
   ]);
   const [selectedCourseId, setSelectedCourseId] = useState<string | null>('1');
   const [isEditingInfo, setIsEditingInfo] = useState(false);
@@ -81,7 +83,14 @@ function App() {
   };
 
   const handleAddCourse = (name: string, color: string, credits: number, semesterId?: string) => {
-    const newCourse: Course = { id: generateId(), name, color, credits, semesterId };
+    const newCourse: Course = {
+      id: generateId(),
+      name,
+      color,
+      credits,
+      semesterId,
+      gradeScale: DEFAULT_GRADE_SCALE
+    };
     setCourses([...courses, newCourse]);
     setSelectedCourseId(newCourse.id);
   };
@@ -263,6 +272,14 @@ function App() {
         courses={activeCourses}
         onToggleTask={handleToggleTask}
         onDeleteTask={handleDeleteTask}
+      />
+    );
+  } else if (selectedCourseId === 'grades-overview') {
+    mainContent = (
+      <GradesOverview
+        courses={activeCourses}
+        semesters={semesters}
+        getCourseGrade={calculateCourseGrade}
       />
     );
   } else if (selectedCourseId === 'trash') {

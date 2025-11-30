@@ -1,0 +1,204 @@
+.grades-overview-container {
+    padding: 32px;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.grades-header {
+    margin-bottom: 32px;
+}
+
+.grades-header h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--dark);
+    margin: 0 0 8px 0;
+}
+
+.grades-subtitle {
+    color: #666;
+    font-size: 1rem;
+    margin: 0;
+}
+
+.grades-table-wrapper {
+    background: white;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-md);
+    overflow: hidden;
+}
+
+.grades-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.grades-table thead {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.grades-table th {
+    padding: 16px;
+    text-align: left;
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.subject-col {
+    width: 40%;
+}
+
+.credits-col,
+.pct-col,
+.grade-col,
+.gpa-col,
+.qpts-col {
+    text-align: center !important;
+    width: 12%;
+}
+
+/* Semester rows */
+.semester-row {
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.05) 0%, rgba(0, 0, 0, 0.08) 100%);
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.semester-row:hover {
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.08) 0%, rgba(0, 0, 0, 0.11) 100%);
+}
+
+.semester-row td {
+    padding: 14px 16px;
+    border-top: 2px solid #ddd;
+}
+
+.semester-name {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 1rem;
+}
+
+.toggle-icon {
+    font-size: 0.7rem;
+    color: #666;
+}
+
+.semester-credits,
+.semester-gpa,
+.semester-qpts {
+    text-align: center;
+    font-weight: 700;
+}
+
+/* Course rows */
+.course-row {
+    transition: background 0.2s;
+}
+
+.course-row:hover {
+    background: rgba(0, 0, 0, 0.02);
+}
+
+.course-row td {
+    padding: 12px 16px;
+    border-top: 1px solid #eee;
+}
+
+.course-name {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    flex-direction: column;
+}
+
+.course-color-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 8px;
+}
+
+.course-contacts-inline {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    font-size: 0.8rem;
+    color: #666;
+    margin-top: 4px;
+}
+
+.course-contacts-inline span {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.course-credits,
+.course-pct,
+.course-grade,
+.course-gpa,
+.course-qpts {
+    text-align: center;
+    font-weight: 500;
+}
+
+.course-grade {
+    font-weight: 700;
+    color: #667eea;
+    font-size: 1.1rem;
+}
+
+.course-gpa,
+.course-qpts {
+    color: var(--secondary);
+    font-weight: 600;
+}
+
+/* Totals row */
+.totals-row {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    font-weight: 700;
+    font-size: 1.1rem;
+}
+
+.totals-row td {
+    padding: 16px;
+    border-top: 3px solid #667eea;
+}
+
+.totals-label {
+    font-size: 1.2rem;
+}
+
+.totals-credits,
+.totals-gpa,
+.totals-qpts {
+    text-align: center;
+}
+
+/* Empty state */
+.empty-grades-state {
+    text-align: center;
+    padding: 64px 32px;
+    color: #999;
+}
+
+.empty-grades-state h3 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #666;
+    margin: 0 0 8px 0;
+}
+
+.empty-grades-state p {
+    font-size: 1rem;
+    margin: 0;
+}

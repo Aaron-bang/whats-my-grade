@@ -270,6 +270,13 @@ export const Sidebar: React.FC<SidebarProps> = ({
                     <span className="course-name">All Assignments</span>
                 </div>
                 <div
+                    className={`course-item ${selectedCourseId === 'grades-overview' ? 'active' : ''} special-item`}
+                    onClick={() => onSelectCourse('grades-overview')}
+                >
+                    <span className="course-icon">📊</span>
+                    <span className="course-name">Grades Overview</span>
+                </div>
+                <div
                     className={`course-item ${selectedCourseId === 'trash' ? 'active' : ''} special-item`}
                     onClick={() => onSelectCourse('trash')}
                 >

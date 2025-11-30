@@ -1,4 +1,22 @@
 /**
+ * Default grade scale (standard US grading system)
+ */
+export const DEFAULT_GRADE_SCALE: { [key: string]: number } = {
+    'A': 93,
+    'A-': 90,
+    'B+': 87,
+    'B': 83,
+    'B-': 80,
+    'C+': 77,
+    'C': 73,
+    'C-': 70,
+    'D+': 67,
+    'D': 63,
+    'D-': 60,
+    'F': 0
+};
+
+/**
  * Calculate letter grade from percentage based on grade scale
  * @param percentage - The percentage score (0-100)
  * @param gradeScale - Object mapping letter grades to minimum percentages

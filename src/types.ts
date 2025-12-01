@@ -7,6 +7,7 @@ export interface Semester {
 export interface Course {
     id: string;
     name: string;
+    title?: string; // Course title (e.g., "Introduction to Calculus 1")
     color: string;
     professorName?: string;
     professorEmail?: string;
@@ -47,4 +48,5 @@ export interface AssignmentGroup {
     courseId: string;
     name: string;
     weight: number; // percentage weight of this group
+    isExtraCredit?: boolean; // If true, points are added directly to final grade
 }

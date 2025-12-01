@@ -85,7 +85,19 @@ export const TaskList: React.FC<TaskListProps> = ({
     };
 
     const calculateGroupAverage = (groupId: string) => {
+        const group = groups.find(g => g.id === groupId);
         const groupTasks = tasks.filter(t => t.groupId === groupId);
+
+        if (group?.isExtraCredit) {
+            const totalExtra = groupTasks.reduce((sum, t) => {
+                if (t.completed && t.earnedScore !== undefined) {
+                    return sum + t.earnedScore;
+                }
+                return sum;
+            }, 0);
+            return totalExtra;
+        }
+
         const gradedTasks = groupTasks.filter(t =>
             t.earnedScore !== undefined &&
             t.totalScore !== undefined &&
@@ -168,12 +180,14 @@ export const TaskList: React.FC<TaskListProps> = ({
                     className="task-input"
                     required
                 />
-                <input
-                    type="date"
-                    value={newTaskDate}
-                    onChange={(e) => setNewTaskDate(e.target.value)}
-                    className="date-input"
-                />
+                {(!selectedGroupId || !groups.find(g => g.id === selectedGroupId)?.isExtraCredit) && (
+                    <input
+                        type="date"
+                        value={newTaskDate}
+                        onChange={(e) => setNewTaskDate(e.target.value)}
+                        className="date-input"
+                    />
+                )}
                 <button type="submit" className="add-task-btn">+</button>
             </form>
 
@@ -242,9 +256,15 @@ export const TaskList: React.FC<TaskListProps> = ({
                                             <span className="group-weight">{group.weight}%</span>
                                             {groupAverage !== null && (
                                                 <>
-                                                    <span className="group-average">Avg: {groupAverage.toFixed(1)}%</span>
-                                                    {gradeScale && (
-                                                        <span className="letter-grade-badge small">{calculateLetterGrade(groupAverage, gradeScale)}</span>
+                                                    {group.isExtraCredit ? (
+                                                        <span className="group-average">Total: {groupAverage.toFixed(1)}%</span>
+                                                    ) : (
+                                                        <>
+                                                            <span className="group-average">Avg: {groupAverage.toFixed(1)}%</span>
+                                                            {gradeScale && (
+                                                                <span className="letter-grade-badge small">{calculateLetterGrade(groupAverage, gradeScale)}</span>
+                                                            )}
+                                                        </>
                                                     )}
                                                 </>
                                             )}
@@ -304,88 +324,74 @@ export const TaskList: React.FC<TaskListProps> = ({
                                                         className="edit-title-input"
                                                         placeholder="Assignment title..."
                                                     />
-                                                    <textarea
-                                                        ref={editDescriptionRef}
-                                                        value={editTaskDescription}
-                                                        onChange={(e) => setEditTaskDescription(e.target.value)}
-                                                        onKeyDown={(e) => {
-                                                            if (e.key === 'Enter' && editTaskDescription.trim()) {
-                                                                e.preventDefault();
-                                                                onUpdateTask(task.id, {
-                                                                    text: editTaskText,
-                                                                    description: editTaskDescription,
-                                                                    dueDate: editTaskDate,
-                                                                    optOut: editTaskOptOut
-                                                                });
-                                                                setEditingTaskId(null);
-                                                            }
-                                                        }}
-                                                        placeholder="Description..."
-                                                        className="edit-description-input"
-                                                        rows={1}
-                                                        onInput={(e) => {
-                                                            const target = e.target as HTMLTextAreaElement;
-                                                            target.style.height = 'auto';
-                                                            target.style.height = `${target.scrollHeight}px`;
-                                                        }}
-                                                    />
-                                                    <div className="edit-task-meta-inputs">
-                                                        <input
-                                                            type="date"
-                                                            value={editTaskDate}
-                                                            onChange={(e) => setEditTaskDate(e.target.value)}
-                                                            className="edit-date-input"
-                                                        />
-                                                        <label className="opt-out-label">
-                                                            <input
-                                                                type="checkbox"
-                                                                checked={editTaskOptOut}
-                                                                onChange={(e) => setEditTaskOptOut(e.target.checked)}
-                                                            />
-                                                            Opt-out
-                                                        </label>
-                                                        <label className="add-attachment-btn">
-                                                            <input
-                                                                type="file"
-                                                                multiple
-                                                                style={{ display: 'none' }}
-                                                                onChange={(e) => {
-                                                                    const files = Array.from(e.target.files || []);
-                                                                    files.forEach(file => {
-                                                                        const reader = new FileReader();
-                                                                        reader.onload = (event) => {
-                                                                            const dataUrl = event.target?.result as string;
-                                                                            const newAttachment = { name: file.name, dataUrl };
-                                                                            // We need to get the latest task attachments, but we only have 'task' from closure.
-                                                                            // Since we are inside map, 'task' is the current task.
-                                                                            // But if we update it, the parent re-renders and we get a new 'task'.
-                                                                            // However, we are in a callback.
-                                                                            // To be safe, we should probably use the functional update if onUpdateTask supported it, but it doesn't.
-                                                                            // But since we are just appending, it should be okay-ish, but there's a race condition if multiple files are uploaded.
-                                                                            // For now, let's just use task.attachments.
-                                                                            // Actually, better to use a functional update if possible, but onUpdateTask takes Partial<Task>.
-                                                                            // Let's assume onUpdateTask handles it or just do it one by one.
-                                                                            // Actually, we can read the current attachments from the task object we have.
-                                                                            // But wait, if we upload multiple files, the 'task' variable in this closure is the same.
-                                                                            // So we might overwrite previous uploads if we do it in a loop.
-                                                                            // Better to process all files and then update once?
-                                                                            // But FileReader is async.
-                                                                            // Let's just do one update per file for now and hope for the best, or better:
-                                                                            // We can't easily wait for all readers.
-                                                                            // Let's just support single file for now? No, user said "add files".
-                                                                            // Let's try to update one by one.
-                                                                            onUpdateTask(task.id, {
-                                                                                attachments: [...(task.attachments || []), newAttachment]
-                                                                            });
-                                                                        };
-                                                                        reader.readAsDataURL(file);
-                                                                    });
-                                                                    e.target.value = '';
+                                                    {!group.isExtraCredit && (
+                                                        <>
+                                                            <textarea
+                                                                ref={editDescriptionRef}
+                                                                value={editTaskDescription}
+                                                                onChange={(e) => setEditTaskDescription(e.target.value)}
+                                                                onKeyDown={(e) => {
+                                                                    if (e.key === 'Enter' && editTaskDescription.trim()) {
+                                                                        e.preventDefault();
+                                                                        onUpdateTask(task.id, {
+                                                                            text: editTaskText,
+                                                                            description: editTaskDescription,
+                                                                            dueDate: editTaskDate,
+                                                                            optOut: editTaskOptOut
+                                                                        });
+                                                                        setEditingTaskId(null);
+                                                                    }
+                                                                }}
+                                                                placeholder="Description..."
+                                                                className="edit-description-input"
+                                                                rows={1}
+                                                                onInput={(e) => {
+                                                                    const target = e.target as HTMLTextAreaElement;
+                                                                    target.style.height = 'auto';
+                                                                    target.style.height = `${target.scrollHeight}px`;
                                                                 }}
                                                             />
-                                                            📎 Add Files
-                                                        </label>
-                                                    </div>
+                                                            <div className="edit-task-meta-inputs">
+                                                                <input
+                                                                    type="date"
+                                                                    value={editTaskDate}
+                                                                    onChange={(e) => setEditTaskDate(e.target.value)}
+                                                                    className="edit-date-input"
+                                                                />
+                                                                <label className="opt-out-label">
+                                                                    <input
+                                                                        type="checkbox"
+                                                                        checked={editTaskOptOut}
+                                                                        onChange={(e) => setEditTaskOptOut(e.target.checked)}
+                                                                    />
+                                                                    Opt-out
+                                                                </label>
+                                                                <label className="add-attachment-btn">
+                                                                    <input
+                                                                        type="file"
+                                                                        multiple
+                                                                        style={{ display: 'none' }}
+                                                                        onChange={(e) => {
+                                                                            const files = Array.from(e.target.files || []);
+                                                                            files.forEach(file => {
+                                                                                const reader = new FileReader();
+                                                                                reader.onload = (event) => {
+                                                                                    const dataUrl = event.target?.result as string;
+                                                                                    const newAttachment = { name: file.name, dataUrl };
+                                                                                    onUpdateTask(task.id, {
+                                                                                        attachments: [...(task.attachments || []), newAttachment]
+                                                                                    });
+                                                                                };
+                                                                                reader.readAsDataURL(file);
+                                                                            });
+                                                                            e.target.value = '';
+                                                                        }}
+                                                                    />
+                                                                    📎 Add Files
+                                                                </label>
+                                                            </div>
+                                                        </>
+                                                    )}
                                                     <div className="edit-task-actions">
                                                         <button
                                                             onClick={(e) => {
@@ -431,26 +437,43 @@ export const TaskList: React.FC<TaskListProps> = ({
                                                 )}
                                                 {task.completed && (
                                                     <div className="task-grade-inputs">
-                                                        <input
-                                                            type="number"
-                                                            placeholder=""
-                                                            value={task.earnedScore ?? ''}
-                                                            onChange={(e) => onUpdateTask(task.id, { earnedScore: e.target.value ? Number(e.target.value) : undefined })}
-                                                            className="grade-input"
-                                                            onClick={(e) => e.stopPropagation()}
-                                                        />
-                                                        <span>/</span>
-                                                        <input
-                                                            type="number"
-                                                            placeholder=""
-                                                            value={task.totalScore ?? ''}
-                                                            onChange={(e) => onUpdateTask(task.id, { totalScore: e.target.value ? Number(e.target.value) : undefined })}
-                                                            className="grade-input"
-                                                            onClick={(e) => e.stopPropagation()}
-                                                        />
+                                                        {group.isExtraCredit ? (
+                                                            <>
+                                                                <input
+                                                                    type="number"
+                                                                    placeholder="%"
+                                                                    value={task.earnedScore ?? ''}
+                                                                    onChange={(e) => onUpdateTask(task.id, { earnedScore: e.target.value ? Number(e.target.value) : undefined })}
+                                                                    className="grade-input"
+                                                                    onClick={(e) => e.stopPropagation()}
+                                                                    style={{ width: '60px' }}
+                                                                />
+                                                                <span style={{ fontSize: '0.9rem', color: '#666' }}>% added</span>
+                                                            </>
+                                                        ) : (
+                                                            <>
+                                                                <input
+                                                                    type="number"
+                                                                    placeholder=""
+                                                                    value={task.earnedScore ?? ''}
+                                                                    onChange={(e) => onUpdateTask(task.id, { earnedScore: e.target.value ? Number(e.target.value) : undefined })}
+                                                                    className="grade-input"
+                                                                    onClick={(e) => e.stopPropagation()}
+                                                                />
+                                                                <span>/</span>
+                                                                <input
+                                                                    type="number"
+                                                                    placeholder=""
+                                                                    value={task.totalScore ?? ''}
+                                                                    onChange={(e) => onUpdateTask(task.id, { totalScore: e.target.value ? Number(e.target.value) : undefined })}
+                                                                    className="grade-input"
+                                                                    onClick={(e) => e.stopPropagation()}
+                                                                />
+                                                            </>
+                                                        )}
                                                     </div>
                                                 )}
-                                                {percentage && (
+                                                {percentage && !group.isExtraCredit && (
                                                     <>
                                                         <span className="task-grade">{percentage}%</span>
                                                         {gradeScale && (

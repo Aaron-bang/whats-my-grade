@@ -69,7 +69,10 @@ function App() {
   const [assignmentGroups, setAssignmentGroups] = useState<AssignmentGroup[]>([
     { id: 'g1', courseId: '1', name: 'Problem Sets', weight: 30 },
     { id: 'g2', courseId: '1', name: 'Exams', weight: 50 },
-    { id: 'g3', courseId: '1', name: 'Quizzes', weight: 20 }
+    { id: 'g3', courseId: '1', name: 'Quizzes', weight: 20 },
+    { id: 'ec1', courseId: '1', name: 'Extra Credits', weight: 0, isExtraCredit: true },
+    { id: 'ec2', courseId: '2', name: 'Extra Credits', weight: 0, isExtraCredit: true },
+    { id: 'ec3', courseId: '3', name: 'Extra Credits', weight: 0, isExtraCredit: true }
   ]);
 
   // Handlers
@@ -93,6 +96,16 @@ function App() {
     };
     setCourses([...courses, newCourse]);
     setSelectedCourseId(newCourse.id);
+
+    // Add default Extra Credits group
+    const extraCreditGroup: AssignmentGroup = {
+      id: generateId(),
+      courseId: newCourse.id,
+      name: 'Extra Credits',
+      weight: 0,
+      isExtraCredit: true
+    };
+    setAssignmentGroups([...assignmentGroups, extraCreditGroup]);
   };
 
   const handleUpdateCourse = (id: string, updates: Partial<Course>) => {
@@ -230,9 +243,25 @@ function App() {
 
     let totalWeightedGrade = 0;
     let totalWeight = 0;
+    let extraCreditTotal = 0;
 
     for (const group of courseGroups) {
       const groupTasks = tasks.filter(t => t.groupId === group.id && !t.deleted);
+
+      if (group.isExtraCredit) {
+        // For extra credit, just sum the earned scores (treated as percentage points)
+        const groupExtraCredit = groupTasks.reduce((sum, t) => {
+          // If completed and has a score, add it. 
+          // We assume earnedScore is the percentage value for extra credit tasks.
+          if (t.completed && t.earnedScore !== undefined) {
+            return sum + t.earnedScore;
+          }
+          return sum;
+        }, 0);
+        extraCreditTotal += groupExtraCredit;
+        continue;
+      }
+
       const gradedTasks = groupTasks.filter(t =>
         t.earnedScore !== undefined &&
         t.totalScore !== undefined &&
@@ -253,10 +282,13 @@ function App() {
       }
     }
 
-    if (totalWeight === 0) return undefined;
+    if (totalWeight === 0 && extraCreditTotal === 0) return undefined;
 
-    // Normalize by actual total weight
-    return (totalWeightedGrade / totalWeight) * 100;
+    // If only extra credit exists, return that
+    if (totalWeight === 0) return extraCreditTotal;
+
+    // Normalize by actual total weight and add extra credit
+    return ((totalWeightedGrade / totalWeight) * 100) + extraCreditTotal;
   };
 
   // Views
@@ -312,6 +344,13 @@ function App() {
           <header className="course-header" style={{ borderBottomColor: currentCourse.color }}>
             <div className="header-left">
               <h1 style={{ color: currentCourse.color }}>{currentCourse.name}</h1>
+              <input
+                type="text"
+                placeholder="e.g., Introduction to Calculus 1"
+                value={currentCourse.title || ''}
+                onChange={(e) => handleUpdateCourse(currentCourse.id, { title: e.target.value })}
+                className="course-title-input"
+              />
             </div>
             <div className="course-info">
               {isEditingInfo ? (

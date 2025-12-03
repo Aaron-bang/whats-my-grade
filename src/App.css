@@ -16,11 +16,12 @@
 
 .course-header {
   padding: 24px 32px;
-  background: white;
+  background: var(--card-bg);
   border-bottom: 2px solid transparent;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  transition: background 0.3s ease;
 }
 
 .course-header h1 {
@@ -40,28 +41,32 @@
   padding: 8px 14px;
   border: 1px solid transparent;
   border-radius: 6px;
-  background: white;
+  background: var(--card-bg);
   font-size: 1.5rem;
-  color: #666;
+  color: var(--text);
+  opacity: 0.7;
   transition: all 0.2s;
   min-width: 300px;
   font-weight: 400;
 }
 
 .course-title-input:hover {
-  border-color: rgba(0, 0, 0, 0.15);
+  border-color: var(--border-color);
+  opacity: 0.9;
 }
 
 .course-title-input:focus {
-  background: white;
-  border-color: #999;
+  background: var(--card-bg);
+  border-color: var(--primary);
   outline: none;
-  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.05);
-  color: #333;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
+  color: var(--text);
+  opacity: 1;
 }
 
 .course-title-input::placeholder {
-  color: #aaa;
+  color: var(--text);
+  opacity: 0.4;
   font-style: italic;
   font-weight: 300;
 }
@@ -82,7 +87,7 @@
 }
 
 .tab-btn:hover {
-  background: rgba(0, 0, 0, 0.05);
+  background: var(--hover-bg);
 }
 
 .tab-btn.active {
@@ -134,18 +139,19 @@
   padding: 4px 8px;
   border: 1px solid transparent;
   border-radius: 4px;
-  background: rgba(0, 0, 0, 0.03);
+  background: var(--input-bg);
   font-size: 0.9rem;
   width: 120px;
   transition: all 0.2s;
+  color: var(--text);
 }
 
 .info-input:hover,
 .info-input:focus {
-  background: white;
-  border-color: #ccc;
+  background: var(--card-bg);
+  border-color: var(--border-color);
   outline: none;
-  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 0 0 2px var(--hover-bg);
 }
 
 .info-input.email {
@@ -169,11 +175,12 @@
   font-weight: 600;
   min-width: 70px;
   text-align: right;
-  color: #666;
+  color: var(--text);
+  opacity: 0.7;
 }
 
 .info-row .info-value {
-  color: #333;
+  color: var(--text);
 }
 
 .info-email {
@@ -185,28 +192,31 @@
 .edit-info-btn,
 .save-info-btn {
   background: transparent;
-  border: 1px solid #ccc;
+  border: 1px solid var(--border-color);
   padding: 4px 12px;
   border-radius: 4px;
   font-size: 0.85rem;
-  color: #666;
+  color: var(--text);
+  opacity: 0.7;
   cursor: pointer;
   transition: all 0.2s;
 }
 
 .edit-info-btn:hover,
 .save-info-btn:hover {
-  background: rgba(0, 0, 0, 0.05);
-  border-color: #999;
+  background: var(--hover-bg);
+  border-color: var(--primary);
+  opacity: 1;
 }
 
 .save-info-btn {
   background: var(--primary);
   color: white;
   border-color: var(--primary);
+  opacity: 1;
 }
 
 .save-info-btn:hover {
-  background: #e85d5d;
-  border-color: #e85d5d;
+  background: var(--secondary);
+  border-color: var(--secondary);
 }

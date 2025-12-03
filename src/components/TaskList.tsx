@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import type { Task, AssignmentGroup } from '../types';
 import { GradeScaleModal } from './GradeScaleModal';
-import { calculateLetterGrade } from '../utils/gradeUtils';
+import { calculateLetterGrade, calculateGroupAverage, calculatePercentage } from '../utils/gradeUtils';
 import './TaskList.css';
 
 interface TaskListProps {
@@ -75,44 +75,6 @@ export const TaskList: React.FC<TaskListProps> = ({
             setNewGroupWeight(0);
             setIsAddingGroup(false);
         }
-    };
-
-    const calculatePercentage = (earned?: number, total?: number) => {
-        if (earned !== undefined && total !== undefined && total > 0) {
-            return ((earned / total) * 100).toFixed(1);
-        }
-        return null;
-    };
-
-    const calculateGroupAverage = (groupId: string) => {
-        const group = groups.find(g => g.id === groupId);
-        const groupTasks = tasks.filter(t => t.groupId === groupId);
-
-        if (group?.isExtraCredit) {
-            const totalExtra = groupTasks.reduce((sum, t) => {
-                if (t.completed && t.earnedScore !== undefined) {
-                    return sum + t.earnedScore;
-                }
-                return sum;
-            }, 0);
-            return totalExtra;
-        }
-
-        const gradedTasks = groupTasks.filter(t =>
-            t.earnedScore !== undefined &&
-            t.totalScore !== undefined &&
-            t.totalScore > 0 &&
-            !t.optOut
-        );
-
-        if (gradedTasks.length === 0) return null;
-
-        const average = gradedTasks.reduce((sum, t) => {
-            const percentage = ((t.earnedScore! / t.totalScore!) * 100);
-            return sum + percentage;
-        }, 0) / gradedTasks.length;
-
-        return average;
     };
 
     return (
@@ -194,7 +156,7 @@ export const TaskList: React.FC<TaskListProps> = ({
             <div className="tasks-scroll">
                 {groups.map(group => {
                     const groupTasks = tasks.filter(t => t.groupId === group.id);
-                    const groupAverage = calculateGroupAverage(group.id);
+                    const groupAverage = calculateGroupAverage(group, tasks);
 
                     return (
                         <div key={group.id} className="assignment-group">

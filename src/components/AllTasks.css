@@ -14,14 +14,14 @@
 
 .all-tasks-header h2 {
     font-size: 1.8rem;
-    color: var(--dark);
+    color: var(--text);
 }
 
 .sort-controls {
     display: flex;
     align-items: center;
     gap: 8px;
-    background: white;
+    background: var(--card-bg);
     padding: 4px;
     border-radius: 8px;
     box-shadow: var(--shadow-sm);
@@ -29,7 +29,8 @@
 
 .sort-controls span {
     font-size: 0.9rem;
-    color: #888;
+    color: var(--text);
+    opacity: 0.6;
     margin-left: 8px;
     margin-right: 4px;
 }
@@ -44,11 +45,11 @@
 }
 
 .sort-btn:hover {
-    background: rgba(0, 0, 0, 0.05);
+    background: var(--hover-bg);
 }
 
 .sort-btn.active {
-    background: var(--dark);
+    background: var(--primary);
     color: white;
 }
 

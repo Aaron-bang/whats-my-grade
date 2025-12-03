@@ -11,18 +11,19 @@
 .grades-header h1 {
     font-size: 2rem;
     font-weight: 700;
-    color: var(--dark);
+    color: var(--text);
     margin: 0 0 8px 0;
 }
 
 .grades-subtitle {
-    color: #666;
+    color: var(--text);
+    opacity: 0.7;
     font-size: 1rem;
     margin: 0;
 }
 
 .grades-table-wrapper {
-    background: white;
+    background: var(--card-bg);
     border-radius: var(--radius);
     box-shadow: var(--shadow-md);
     overflow: hidden;
@@ -74,7 +75,7 @@
 
 .semester-row td {
     padding: 14px 16px;
-    border-top: 2px solid #ddd;
+    border-top: 2px solid var(--border-color);
 }
 
 .semester-name {
@@ -86,7 +87,8 @@
 
 .toggle-icon {
     font-size: 0.7rem;
-    color: #666;
+    color: var(--text);
+    opacity: 0.6;
 }
 
 .semester-credits,
@@ -102,12 +104,12 @@
 }
 
 .course-row:hover {
-    background: rgba(0, 0, 0, 0.02);
+    background: var(--hover-bg);
 }
 
 .course-row td {
     padding: 12px 16px;
-    border-top: 1px solid #eee;
+    border-top: 1px solid var(--border-color);
 }
 
 .course-name {
@@ -130,7 +132,8 @@
     flex-direction: column;
     gap: 4px;
     font-size: 0.8rem;
-    color: #666;
+    color: var(--text);
+    opacity: 0.6;
     margin-top: 4px;
 }
 
@@ -194,11 +197,14 @@
 .empty-grades-state h3 {
     font-size: 1.5rem;
     font-weight: 600;
-    color: #666;
+    color: var(--text);
+    opacity: 0.7;
     margin: 0 0 8px 0;
 }
 
 .empty-grades-state p {
     font-size: 1rem;
     margin: 0;
+    color: var(--text);
+    opacity: 0.5;
 }

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { DEFAULT_GRADE_SCALE } from '../utils/gradeUtils';
 import './GradeScaleModal.css';
 
 interface GradeScaleModalProps {
@@ -23,20 +24,7 @@ export const GradeScaleModal: React.FC<GradeScaleModalProps> = ({
             setGradeScale(initialGradeScale);
         } else {
             // Default grade scale
-            setGradeScale({
-                'A': 93,
-                'A-': 90,
-                'B+': 87,
-                'B': 83,
-                'B-': 80,
-                'C+': 77,
-                'C': 73,
-                'C-': 70,
-                'D+': 67,
-                'D': 63,
-                'D-': 60,
-                'F': 0
-            });
+            setGradeScale(DEFAULT_GRADE_SCALE);
         }
     }, [initialGradeScale, isOpen]);
 

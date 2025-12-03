@@ -6,7 +6,7 @@
 
 .combined-left {
     flex: 1;
-    border-right: 1px solid var(--gray);
+    border-right: 1px solid var(--border-color);
     overflow: hidden;
 }
 

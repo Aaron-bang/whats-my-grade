@@ -1,81 +1,126 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Sidebar } from './components/Sidebar';
 import { CombinedView } from './components/CombinedView';
 import { AllTasks } from './components/AllTasks';
 import { Trash } from './components/Trash';
 import { GradesOverview } from './components/GradesOverview';
+import { ThemeToggle } from './components/ThemeToggle';
 import type { Course, Note, Task, AssignmentGroup, Semester } from './types';
-import { DEFAULT_GRADE_SCALE } from './utils/gradeUtils';
+import { DEFAULT_GRADE_SCALE, calculateCourseGrade } from './utils/gradeUtils';
 import './App.css';
 
 // Simple ID generator
 const generateId = () => Math.random().toString(36).substr(2, 9);
 
 function App() {
-  // State
-  const [semesters, setSemesters] = useState<Semester[]>([
-    { id: 's1', name: 'Fall 2023', createdAt: Date.now() }
-  ]);
+  // --- State ---
+  const [semesters, setSemesters] = useState<Semester[]>(() => {
+    const saved = localStorage.getItem('semesters');
+    return saved ? JSON.parse(saved) : [{ id: 's1', name: 'Fall 2023', createdAt: Date.now() }];
+  });
 
-  const [courses, setCourses] = useState<Course[]>([
-    { id: '1', name: 'MATH 101', color: '#FF6B6B', semesterId: 's1', gradeScale: DEFAULT_GRADE_SCALE },
-    { id: '2', name: 'HIST 105', color: '#4ECDC4', semesterId: 's1', gradeScale: DEFAULT_GRADE_SCALE },
-    { id: '3', name: 'CSCI 228', color: '#FFE66D', gradeScale: DEFAULT_GRADE_SCALE }
-  ]);
-  const [selectedCourseId, setSelectedCourseId] = useState<string | null>('1');
+  const [courses, setCourses] = useState<Course[]>(() => {
+    const saved = localStorage.getItem('courses');
+    return saved ? JSON.parse(saved) : [
+      { id: '1', name: 'MATH 101', color: '#FF6B6B', semesterId: 's1', gradeScale: DEFAULT_GRADE_SCALE },
+      { id: '2', name: 'HIST 105', color: '#4ECDC4', semesterId: 's1', gradeScale: DEFAULT_GRADE_SCALE },
+      { id: '3', name: 'CSCI 228', color: '#FFE66D', gradeScale: DEFAULT_GRADE_SCALE }
+    ];
+  });
+
+  const [selectedCourseId, setSelectedCourseId] = useState<string | null>(() => {
+    const saved = localStorage.getItem('selectedCourseId');
+    return saved ? JSON.parse(saved) : '1';
+  });
+
   const [isEditingInfo, setIsEditingInfo] = useState(false);
 
-  const [notes, setNotes] = useState<Note[]>([
-    { id: 'n1', courseId: '1', title: 'Lecture 1', content: 'Derivatives are...', createdAt: Date.now() },
-    { id: 'n2', courseId: '2', title: 'Lecture 1', content: 'Lecture 1 notes.', createdAt: Date.now() }
+  const [notes, setNotes] = useState<Note[]>(() => {
+    const saved = localStorage.getItem('notes');
+    return saved ? JSON.parse(saved) : [
+      { id: 'n1', courseId: '1', title: 'Lecture 1', content: 'Derivatives are...', createdAt: Date.now() },
+      { id: 'n2', courseId: '2', title: 'Lecture 1', content: 'Lecture 1 notes.', createdAt: Date.now() }
+    ];
+  });
 
-  ]);
+  const [tasks, setTasks] = useState<Task[]>(() => {
+    const saved = localStorage.getItem('tasks');
+    return saved ? JSON.parse(saved) : [
+      {
+        id: 't1',
+        courseId: '1',
+        text: 'Problem Set 1',
+        description: 'Ad adipisicing aliqua magna cupidatat ad aliquip pariatur officia ullamco dolor id sunt.',
+        dueDate: new Date().toISOString().split('T')[0],
+        completed: true,
+        groupId: 'g1',
+        earnedScore: 37,
+        totalScore: 40,
+        optOut: true
+      },
+      {
+        id: 't2',
+        courseId: '1',
+        text: 'Problem Set 2',
+        description: 'PS2',
+        dueDate: new Date().toISOString().split('T')[0],
+        completed: true,
+        groupId: 'g1',
+        earnedScore: 39,
+        totalScore: 40
+      },
+      {
+        id: 't3',
+        courseId: '1',
+        text: 'Problem Set 3',
+        description: 'PS3',
+        dueDate: new Date().toISOString().split('T')[0],
+        completed: false,
+        groupId: 'g1',
+        earnedScore: undefined,
+        totalScore: undefined
+      }
+    ];
+  });
 
-  const [tasks, setTasks] = useState<Task[]>([
-    {
-      id: 't1',
-      courseId: '1',
-      text: 'Problem Set 1',
-      description: 'Ad adipisicing aliqua magna cupidatat ad aliquip pariatur officia ullamco dolor id sunt.',
-      dueDate: new Date().toISOString().split('T')[0],
-      completed: true,
-      groupId: 'g1',
-      earnedScore: 37,
-      totalScore: 40,
-      optOut: true
-    },
-    {
-      id: 't2',
-      courseId: '1',
-      text: 'Problem Set 2',
-      description: 'PS2',
-      dueDate: new Date().toISOString().split('T')[0],
-      completed: true,
-      groupId: 'g1',
-      earnedScore: 39,
-      totalScore: 40
-    },
-    {
-      id: 't3',
-      courseId: '1',
-      text: 'Problem Set 3',
-      description: 'PS3',
-      dueDate: new Date().toISOString().split('T')[0],
-      completed: false,
-      groupId: 'g1',
-    }
-  ]);
+  const [assignmentGroups, setAssignmentGroups] = useState<AssignmentGroup[]>(() => {
+    const saved = localStorage.getItem('assignmentGroups');
+    return saved ? JSON.parse(saved) : [
+      { id: 'g1', courseId: '1', name: 'Problem Sets', weight: 30 },
+      { id: 'g2', courseId: '1', name: 'Exams', weight: 50 },
+      { id: 'g3', courseId: '1', name: 'Quizzes', weight: 20 },
+      { id: 'ec1', courseId: '1', name: 'Extra Credits', weight: 0, isExtraCredit: true },
+      { id: 'ec2', courseId: '2', name: 'Extra Credits', weight: 0, isExtraCredit: true },
+      { id: 'ec3', courseId: '3', name: 'Extra Credits', weight: 0, isExtraCredit: true }
+    ];
+  });
 
-  const [assignmentGroups, setAssignmentGroups] = useState<AssignmentGroup[]>([
-    { id: 'g1', courseId: '1', name: 'Problem Sets', weight: 30 },
-    { id: 'g2', courseId: '1', name: 'Exams', weight: 50 },
-    { id: 'g3', courseId: '1', name: 'Quizzes', weight: 20 },
-    { id: 'ec1', courseId: '1', name: 'Extra Credits', weight: 0, isExtraCredit: true },
-    { id: 'ec2', courseId: '2', name: 'Extra Credits', weight: 0, isExtraCredit: true },
-    { id: 'ec3', courseId: '3', name: 'Extra Credits', weight: 0, isExtraCredit: true }
-  ]);
+  // --- Effects for Persistence ---
+  useEffect(() => {
+    localStorage.setItem('semesters', JSON.stringify(semesters));
+  }, [semesters]);
 
-  // Handlers
+  useEffect(() => {
+    localStorage.setItem('courses', JSON.stringify(courses));
+  }, [courses]);
+
+  useEffect(() => {
+    localStorage.setItem('selectedCourseId', JSON.stringify(selectedCourseId));
+  }, [selectedCourseId]);
+
+  useEffect(() => {
+    localStorage.setItem('notes', JSON.stringify(notes));
+  }, [notes]);
+
+  useEffect(() => {
+    localStorage.setItem('tasks', JSON.stringify(tasks));
+  }, [tasks]);
+
+  useEffect(() => {
+    localStorage.setItem('assignmentGroups', JSON.stringify(assignmentGroups));
+  }, [assignmentGroups]);
+
+  // --- Handlers ---
   const handleAddSemester = (name: string) => {
     const newSemester: Semester = { id: generateId(), name, createdAt: Date.now() };
     setSemesters([newSemester, ...semesters]);
@@ -155,8 +200,7 @@ function App() {
       setNotes(notes.filter(n => n.id !== id));
     } else if (type === 'course') {
       setCourses(courses.filter(c => c.id !== id));
-      // Also delete associated notes and tasks forever? Or keep them orphaned?
-      // Usually better to clean up.
+      // Also delete associated notes and tasks forever
       setNotes(notes.filter(n => n.courseId !== id));
       setTasks(tasks.filter(t => t.courseId !== id));
       setAssignmentGroups(assignmentGroups.filter(g => g.courseId !== id));
@@ -235,63 +279,12 @@ function App() {
     handleUpdateCourse(selectedCourseId, { gradeScale });
   };
 
-  // Calculate course grade based on group weights
-  const calculateCourseGrade = (courseId: string): number | undefined => {
-    const courseGroups = assignmentGroups.filter(g => g.courseId === courseId);
-
-    if (courseGroups.length === 0) return undefined;
-
-    let totalWeightedGrade = 0;
-    let totalWeight = 0;
-    let extraCreditTotal = 0;
-
-    for (const group of courseGroups) {
-      const groupTasks = tasks.filter(t => t.groupId === group.id && !t.deleted);
-
-      if (group.isExtraCredit) {
-        // For extra credit, just sum the earned scores (treated as percentage points)
-        const groupExtraCredit = groupTasks.reduce((sum, t) => {
-          // If completed and has a score, add it. 
-          // We assume earnedScore is the percentage value for extra credit tasks.
-          if (t.completed && t.earnedScore !== undefined) {
-            return sum + t.earnedScore;
-          }
-          return sum;
-        }, 0);
-        extraCreditTotal += groupExtraCredit;
-        continue;
-      }
-
-      const gradedTasks = groupTasks.filter(t =>
-        t.earnedScore !== undefined &&
-        t.totalScore !== undefined &&
-        t.totalScore > 0 &&
-        !t.optOut
-      );
-
-      if (gradedTasks.length > 0) {
-        // Calculate average for this group
-        const groupAverage = gradedTasks.reduce((sum, t) => {
-          const percentage = ((t.earnedScore! / t.totalScore!) * 100);
-          return sum + percentage;
-        }, 0) / gradedTasks.length;
-
-        // Add weighted contribution
-        totalWeightedGrade += (groupAverage * group.weight / 100);
-        totalWeight += group.weight;
-      }
-    }
-
-    if (totalWeight === 0 && extraCreditTotal === 0) return undefined;
-
-    // If only extra credit exists, return that
-    if (totalWeight === 0) return extraCreditTotal;
-
-    // Normalize by actual total weight and add extra credit
-    return ((totalWeightedGrade / totalWeight) * 100) + extraCreditTotal;
+  // Wrapper for calculateCourseGrade to pass current state
+  const getCourseGrade = (courseId: string): number | undefined => {
+    return calculateCourseGrade(courseId, tasks, assignmentGroups);
   };
 
-  // Views
+  // --- Views ---
   let mainContent;
 
   const activeCourses = courses.filter(c => !c.deleted);
@@ -311,7 +304,7 @@ function App() {
       <GradesOverview
         courses={activeCourses}
         semesters={semesters}
-        getCourseGrade={calculateCourseGrade}
+        getCourseGrade={getCourseGrade}
       />
     );
   } else if (selectedCourseId === 'trash') {
@@ -337,7 +330,7 @@ function App() {
       const courseNotes = notes.filter(n => n.courseId === selectedCourseId && !n.deleted);
       const courseTasks = tasks.filter(t => t.courseId === selectedCourseId && !t.deleted);
       const courseGroups = assignmentGroups.filter(g => g.courseId === selectedCourseId);
-      const courseGrade = calculateCourseGrade(selectedCourseId);
+      const courseGrade = getCourseGrade(selectedCourseId);
 
       mainContent = (
         <>
@@ -450,6 +443,7 @@ function App() {
 
   return (
     <div className="app-container">
+      <ThemeToggle />
       <Sidebar
         courses={courses}
         semesters={semesters}
@@ -463,7 +457,7 @@ function App() {
         onDeleteCourse={handleDeleteCourse}
         onAddSemester={handleAddSemester}
         onEditSemester={handleEditSemester}
-        getCourseGrade={calculateCourseGrade}
+        getCourseGrade={getCourseGrade}
       />
 
       <main className="main-content">

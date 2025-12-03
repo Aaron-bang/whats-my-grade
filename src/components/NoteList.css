@@ -14,7 +14,7 @@
 
 .section-header h3 {
     font-size: 1.5rem;
-    color: var(--dark);
+    color: var(--text);
 }
 
 .add-btn {
@@ -68,7 +68,7 @@
     font-weight: 600;
     border: none;
     width: 100%;
-    color: var(--dark);
+    color: var(--text);
     background: transparent;
 }
 
@@ -99,7 +99,8 @@
 .note-footer {
     margin-top: 12px;
     font-size: 0.8rem;
-    color: #888;
+    color: var(--text);
+    opacity: 0.5;
     text-align: right;
 }
 
@@ -107,8 +108,9 @@
     grid-column: 1 / -1;
     text-align: center;
     padding: 40px;
-    color: #888;
-    background: rgba(0, 0, 0, 0.02);
+    color: var(--text);
+    opacity: 0.5;
+    background: var(--input-bg);
     border-radius: var(--radius);
-    border: 2px dashed var(--gray);
+    border: 2px dashed var(--border-color);
 }

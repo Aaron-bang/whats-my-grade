@@ -5,8 +5,9 @@
     padding: 24px;
     display: flex;
     flex-direction: column;
-    border-right: 1px solid var(--gray);
+    border-right: 1px solid var(--border-color);
     box-shadow: var(--shadow-sm);
+    transition: background-color 0.3s ease;
 }
 
 .sidebar-header {
@@ -18,7 +19,7 @@
 
 .sidebar-header h2 {
     font-weight: 700;
-    color: var(--dark);
+    color: var(--text);
     font-size: 1.5rem;
     margin: 0;
 }
@@ -53,16 +54,16 @@
 
 .divider {
     height: 1px;
-    background-color: var(--gray);
+    background-color: var(--border-color);
     margin: 12px 0;
 }
 
 .course-item:hover {
-    background-color: rgba(0, 0, 0, 0.03);
+    background-color: var(--hover-bg);
 }
 
 .course-item.active {
-    background-color: rgba(0, 0, 0, 0.05);
+    background-color: var(--input-bg);
     font-weight: 600;
 }
 
@@ -75,12 +76,13 @@
 
 .course-name {
     font-weight: 500;
-    color: var(--dark);
+    color: var(--text);
 }
 
 .course-grade-display {
     font-size: 0.8rem;
-    color: #666;
+    color: var(--text);
+    opacity: 0.7;
 }
 
 .course-grade-text {
@@ -111,10 +113,10 @@
 }
 
 .edit-course-form {
-    background: #fff;
+    background: var(--card-bg);
     padding: 16px;
     border-radius: var(--radius);
-    border: 1px solid var(--gray);
+    border: 1px solid var(--border-color);
     box-shadow: var(--shadow-md);
     margin-bottom: 8px;
 }
@@ -122,9 +124,11 @@
 .edit-course-form input {
     width: 100%;
     padding: 8px 12px;
-    border: 1px solid var(--gray);
+    border: 1px solid var(--border-color);
     border-radius: 8px;
     margin-bottom: 12px;
+    background: var(--card-bg);
+    color: var(--text);
 }
 
 .edit-actions {
@@ -184,19 +188,21 @@
 }
 
 .add-course-form {
-    background: #fff;
+    background: var(--card-bg);
     padding: 16px;
     border-radius: var(--radius);
-    border: 1px solid var(--gray);
+    border: 1px solid var(--border-color);
     box-shadow: var(--shadow-md);
 }
 
 .add-course-form input {
     width: 100%;
     padding: 8px 12px;
-    border: 1px solid var(--gray);
+    border: 1px solid var(--border-color);
     border-radius: 8px;
     margin-bottom: 12px;
+    background: var(--card-bg);
+    color: var(--text);
 }
 
 .color-picker {
@@ -215,7 +221,7 @@
 }
 
 .color-option.selected {
-    border-color: var(--dark);
+    border-color: var(--text);
     transform: scale(1.1);
 }
 
@@ -273,8 +279,9 @@
 
 .course-credits {
     font-size: 0.75rem;
-    color: #999;
-    background: rgba(0, 0, 0, 0.05);
+    color: var(--text);
+    opacity: 0.6;
+    background: var(--input-bg);
     padding: 1px 5px;
     border-radius: 4px;
     margin-left: 8px;
@@ -289,7 +296,8 @@
 
 .credits-input-group label {
     font-size: 0.9rem;
-    color: #666;
+    color: var(--text);
+    opacity: 0.7;
     font-weight: 500;
 }
 
@@ -310,7 +318,7 @@
     justify-content: space-between;
     align-items: center;
     padding: 0 16px 8px;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    border-bottom: 1px solid var(--border-color);
     margin-bottom: 8px;
 }
 
@@ -346,7 +354,7 @@
 }
 
 .toggle-semester-btn:hover {
-    color: var(--dark);
+    color: var(--text);
 }
 
 .edit-semester-inline input {
@@ -356,8 +364,9 @@
     border-radius: 4px;
     font-size: 0.85rem;
     font-weight: 700;
-    color: var(--dark);
+    color: var(--text);
     text-transform: uppercase;
+    background: var(--card-bg);
 }
 
 .semester-name {
@@ -393,10 +402,11 @@
 .semester-select {
     flex: 1;
     padding: 6px 8px;
-    border: 1px solid var(--gray);
+    border: 1px solid var(--border-color);
     border-radius: 8px;
     font-size: 0.9rem;
-    background-color: white;
+    background-color: var(--card-bg);
+    color: var(--text);
 }
 
 .sidebar-actions {
@@ -421,17 +431,19 @@
 }
 
 .add-semester-form {
-    background: #fff;
+    background: var(--card-bg);
     padding: 16px;
     border-radius: var(--radius);
-    border: 1px solid var(--gray);
+    border: 1px solid var(--border-color);
     box-shadow: var(--shadow-md);
 }
 
 .add-semester-form input {
     width: 100%;
     padding: 8px 12px;
-    border: 1px solid var(--gray);
+    border: 1px solid var(--border-color);
     border-radius: 8px;
     margin-bottom: 12px;
+    background: var(--card-bg);
+    color: var(--text);
 }

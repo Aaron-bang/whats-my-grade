@@ -3,7 +3,7 @@
   "private": true,
   "version": "1.0.0",
   "type": "module",
-  "homepage": "https://aaron-bang.github.io/whats_my_grade/",
+  "homepage": "https://aaron-bang.github.io/whats-my-grade/",
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",

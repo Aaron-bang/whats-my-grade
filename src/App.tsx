@@ -6,6 +6,7 @@ import { Trash } from './components/Trash';
 import { GradesOverview } from './components/GradesOverview';
 import { ThemeToggle } from './components/ThemeToggle';
 import { EmailSyncModal, type ImportableAssignment } from './components/EmailSyncModal';
+import { SettingsModal } from './components/SettingsModal';
 import { fetchAssignmentEmails } from './services/gmailService';
 import { extractAssignmentsFromEmails } from './services/aiService';
 import type { Course, Note, Task, AssignmentGroup, Semester, GmailAuth, ExtractedAssignment, SyncSettings } from './types';
@@ -104,11 +105,10 @@ function App() {
   const [isSyncing, setIsSyncing] = useState(false);
   const [extractedAssignments, setExtractedAssignments] = useState<ExtractedAssignment[]>([]);
   const [showSyncModal, setShowSyncModal] = useState(false);
+  const [showSettingsModal, setShowSettingsModal] = useState(false);
   const [syncSettings, setSyncSettings] = useState<SyncSettings>(() => {
     const saved = localStorage.getItem('syncSettings');
     return saved ? JSON.parse(saved) : {
-      autoSync: false,
-      syncFrequency: 'manual' as const,
       dateRange: GMAIL_SEARCH_CONFIG.defaultDateRange,
       keywords: GMAIL_SEARCH_CONFIG.keywords
     };
@@ -555,6 +555,7 @@ function App() {
         onGmailSync={handleGmailSync}
         isSyncing={isSyncing}
         lastSyncTime={syncSettings.lastSyncTime}
+        onOpenSettings={() => setShowSettingsModal(true)}
       />
 
       <main className="main-content">
@@ -570,6 +571,11 @@ function App() {
           onClose={() => setShowSyncModal(false)}
         />
       )}
+
+      <SettingsModal
+        isOpen={showSettingsModal}
+        onClose={() => setShowSettingsModal(false)}
+      />
     </div>
   );
 }

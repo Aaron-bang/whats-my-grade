@@ -21,6 +21,7 @@ interface SidebarProps {
     onGmailSync: () => void;
     isSyncing: boolean;
     lastSyncTime?: number;
+    onOpenSettings: () => void;
 }
 
 const COLORS = ['#FF6B6B', '#FFE66D', '#FF9F1C', '#2EC4B6', '#E71D36', '#7209B7'];
@@ -40,7 +41,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
     onGmailAuthChange,
     onGmailSync,
     isSyncing,
-    lastSyncTime
+    lastSyncTime,
+    onOpenSettings
 }) => {
     const [isAdding, setIsAdding] = useState(false);
     const [newCourseName, setNewCourseName] = useState('');
@@ -454,6 +456,10 @@ export const Sidebar: React.FC<SidebarProps> = ({
                         + Add Semester
                     </button>
                 )}
+
+                <button className="settings-btn" onClick={onOpenSettings}>
+                    ⚙️ Settings
+                </button>
             </div>
         </div>
     );

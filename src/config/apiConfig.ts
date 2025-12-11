@@ -1,7 +1,9 @@
 // API Configuration for Gmail and AI Integration
 
 export const GOOGLE_CONFIG = {
-    clientId: import.meta.env.VITE_GOOGLE_CLIENT_ID || '',
+    get clientId() {
+        return localStorage.getItem('google_client_id') || import.meta.env.VITE_GOOGLE_CLIENT_ID || '';
+    },
     scopes: [
         'https://www.googleapis.com/auth/gmail.readonly',
         'https://www.googleapis.com/auth/userinfo.email'
@@ -10,7 +12,9 @@ export const GOOGLE_CONFIG = {
 };
 
 export const OPENAI_CONFIG = {
-    apiKey: import.meta.env.VITE_OPENAI_API_KEY || '',
+    get apiKey() {
+        return localStorage.getItem('openai_api_key') || import.meta.env.VITE_OPENAI_API_KEY || '';
+    },
     model: 'gpt-4o-mini', // Cost-effective model for assignment extraction
     maxTokens: 1000,
     temperature: 0.3 // Lower temperature for more consistent extraction
@@ -36,11 +40,7 @@ export const GMAIL_SEARCH_CONFIG = {
     defaultDateRange: 30
 };
 
-export const SYNC_CONFIG = {
-    autoSyncInterval: 3600000, // 1 hour in milliseconds
-    retryAttempts: 3,
-    retryDelay: 1000 // 1 second
-};
+
 
 // Debug mode
 export const DEBUG_MODE = import.meta.env.VITE_DEBUG_MODE === 'true';

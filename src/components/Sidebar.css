@@ -485,3 +485,22 @@
     cursor: pointer;
     background: none;
 }
+
+.settings-btn {
+    width: 100%;
+    padding: 10px;
+    background-color: transparent;
+    color: var(--text);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    font-weight: 500;
+    transition: all 0.2s;
+    opacity: 0.7;
+    margin-top: 8px;
+    cursor: pointer;
+}
+
+.settings-btn:hover {
+    opacity: 1;
+    background-color: var(--hover-bg);
+}

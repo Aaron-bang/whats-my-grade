@@ -82,8 +82,6 @@ export interface ExtractedAssignment {
 }
 
 export interface SyncSettings {
-    autoSync: boolean;
-    syncFrequency: 'manual' | 'hourly' | 'daily';
     dateRange: number; // days to look back
     keywords: string[];
     lastSyncTime?: number;

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import type { Course, Semester } from '../types';
+import { GmailConnect } from './GmailConnect';
+import type { Course, Semester, GmailAuth } from '../types';
 import { calculateLetterGrade, calculateWeightedGPA } from '../utils/gradeUtils';
 import './Sidebar.css';
 
@@ -14,6 +15,12 @@ interface SidebarProps {
     onAddSemester: (name: string) => void;
     onEditSemester: (id: string, name: string) => void;
     getCourseGrade?: (courseId: string) => number | undefined;
+    // Gmail Integration
+    gmailAuth: GmailAuth | null;
+    onGmailAuthChange: (auth: GmailAuth | null) => void;
+    onGmailSync: () => void;
+    isSyncing: boolean;
+    lastSyncTime?: number;
 }
 
 const COLORS = ['#FF6B6B', '#FFE66D', '#FF9F1C', '#2EC4B6', '#E71D36', '#7209B7'];
@@ -28,7 +35,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
     onDeleteCourse,
     onAddSemester,
     onEditSemester,
-    getCourseGrade
+    getCourseGrade,
+    // gmailAuth is not used directly, passed to GmailConnect
+    onGmailAuthChange,
+    onGmailSync,
+    isSyncing,
+    lastSyncTime
 }) => {
     const [isAdding, setIsAdding] = useState(false);
     const [newCourseName, setNewCourseName] = useState('');
@@ -259,6 +271,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
         );
     };
 
+
     return (
         <div className="sidebar">
             <div className="sidebar-header">
@@ -270,6 +283,13 @@ export const Sidebar: React.FC<SidebarProps> = ({
                     </div>
                 )}
             </div>
+
+            <GmailConnect
+                onAuthChange={onGmailAuthChange}
+                onSyncClick={onGmailSync}
+                isSyncing={isSyncing}
+                lastSyncTime={lastSyncTime}
+            />
 
             <div className="course-list">
                 <div

@@ -96,6 +96,31 @@ Try it out: **[https://aaron-bang.github.io/whats_my_grade/](https://aaron-bang.
 - Data persists across browser sessions
 - No backend required
 
+### 🤖 Gmail AI Integration (NEW!)
+
+Automatically extract assignments from your emails using AI-powered analysis.
+
+#### Features
+- **Gmail OAuth Integration**: Securely connect your Gmail account
+- **Smart Email Filtering**: Automatically finds assignment-related emails
+- **AI-Powered Extraction**: Uses OpenAI GPT-4 to extract:
+  - Assignment titles and descriptions
+  - Due dates
+  - Course matching
+  - Assignment types (homework, exam, quiz, etc.)
+  - Point values
+- **Review Before Import**: Preview and edit extracted assignments
+- **Course Matching**: Automatically matches emails to existing courses
+- **Confidence Scoring**: AI provides confidence levels for each extraction
+- **Customizable Sync**: Configure date ranges and keywords
+
+#### Setup Required
+1. Google Cloud Project with Gmail API enabled
+2. OAuth 2.0 Client ID
+3. OpenAI API Key
+
+See [GMAIL_SETUP.md](GMAIL_SETUP.md) for detailed setup instructions.
+
 ## 🚀 Getting Started
 
 ### Prerequisites
@@ -217,6 +242,9 @@ npm run preview
 - **Vite** - Lightning-fast build tool and dev server
 - **CSS3** - Custom styling with CSS variables for theming
 - **LocalStorage API** - Client-side data persistence
+- **Gmail API** - Email integration for assignment extraction
+- **OpenAI GPT-4** - AI-powered assignment extraction
+- **Web Crypto API** - Secure token encryption
 
 ## 📁 Project Structure
 

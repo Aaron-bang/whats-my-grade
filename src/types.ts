@@ -50,3 +50,41 @@ export interface AssignmentGroup {
     weight: number; // percentage weight of this group
     isExtraCredit?: boolean; // If true, points are added directly to final grade
 }
+
+// Gmail Integration Types
+
+export interface GmailAuth {
+    accessToken: string;
+    refreshToken?: string;
+    expiresAt: number;
+    email: string;
+}
+
+export interface EmailMessage {
+    id: string;
+    subject: string;
+    from: string;
+    date: Date;
+    body: string;
+    snippet: string;
+}
+
+export interface ExtractedAssignment {
+    title: string;
+    description?: string;
+    dueDate?: string; // YYYY-MM-DD
+    courseName?: string;
+    assignmentType?: string; // homework, exam, quiz, project, etc.
+    points?: number;
+    confidence: number; // AI confidence score 0-1
+    sourceEmailId: string;
+    sourceEmailSubject?: string;
+}
+
+export interface SyncSettings {
+    autoSync: boolean;
+    syncFrequency: 'manual' | 'hourly' | 'daily';
+    dateRange: number; // days to look back
+    keywords: string[];
+    lastSyncTime?: number;
+}

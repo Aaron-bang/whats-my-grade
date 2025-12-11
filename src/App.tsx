@@ -5,8 +5,12 @@ import { AllTasks } from './components/AllTasks';
 import { Trash } from './components/Trash';
 import { GradesOverview } from './components/GradesOverview';
 import { ThemeToggle } from './components/ThemeToggle';
-import type { Course, Note, Task, AssignmentGroup, Semester } from './types';
+import { EmailSyncModal, type ImportableAssignment } from './components/EmailSyncModal';
+import { fetchAssignmentEmails } from './services/gmailService';
+import { extractAssignmentsFromEmails } from './services/aiService';
+import type { Course, Note, Task, AssignmentGroup, Semester, GmailAuth, ExtractedAssignment, SyncSettings } from './types';
 import { DEFAULT_GRADE_SCALE, calculateCourseGrade } from './utils/gradeUtils';
+import { GMAIL_SEARCH_CONFIG } from './config/apiConfig';
 import './App.css';
 
 // Simple ID generator
@@ -50,7 +54,7 @@ function App() {
         id: 't1',
         courseId: '1',
         text: 'Problem Set 1',
-        description: 'Ad adipisicing aliqua magna cupidatat ad aliquip pariatur officia ullamco dolor id sunt.',
+        description: 'PS1',
         dueDate: new Date().toISOString().split('T')[0],
         completed: true,
         groupId: 'g1',
@@ -95,6 +99,21 @@ function App() {
     ];
   });
 
+  // Gmail Integration State
+  const [gmailAuth, setGmailAuth] = useState<GmailAuth | null>(null);
+  const [isSyncing, setIsSyncing] = useState(false);
+  const [extractedAssignments, setExtractedAssignments] = useState<ExtractedAssignment[]>([]);
+  const [showSyncModal, setShowSyncModal] = useState(false);
+  const [syncSettings, setSyncSettings] = useState<SyncSettings>(() => {
+    const saved = localStorage.getItem('syncSettings');
+    return saved ? JSON.parse(saved) : {
+      autoSync: false,
+      syncFrequency: 'manual' as const,
+      dateRange: GMAIL_SEARCH_CONFIG.defaultDateRange,
+      keywords: GMAIL_SEARCH_CONFIG.keywords
+    };
+  });
+
   // --- Effects for Persistence ---
   useEffect(() => {
     localStorage.setItem('semesters', JSON.stringify(semesters));
@@ -119,6 +138,10 @@ function App() {
   useEffect(() => {
     localStorage.setItem('assignmentGroups', JSON.stringify(assignmentGroups));
   }, [assignmentGroups]);
+
+  useEffect(() => {
+    localStorage.setItem('syncSettings', JSON.stringify(syncSettings));
+  }, [syncSettings]);
 
   // --- Handlers ---
   const handleAddSemester = (name: string) => {
@@ -277,6 +300,75 @@ function App() {
   const handleUpdateGradeScale = (gradeScale: { [key: string]: number }) => {
     if (!selectedCourseId || selectedCourseId === 'all-tasks' || selectedCourseId === 'trash') return;
     handleUpdateCourse(selectedCourseId, { gradeScale });
+  };
+
+  // Gmail Handlers
+  const handleGmailAuthChange = (auth: GmailAuth | null) => {
+    setGmailAuth(auth);
+  };
+
+  const handleGmailSync = async () => {
+    if (!gmailAuth) {
+      alert('Please connect your Gmail account first');
+      return;
+    }
+
+    setIsSyncing(true);
+    try {
+      // Calculate date range
+      const afterDate = new Date();
+      afterDate.setDate(afterDate.getDate() - syncSettings.dateRange);
+
+      // Fetch emails
+      const emails = await fetchAssignmentEmails(afterDate);
+
+      if (emails.length === 0) {
+        alert('No assignment-related emails found in the specified date range.');
+        setIsSyncing(false);
+        return;
+      }
+
+      // Extract assignments using AI
+      const assignments = await extractAssignmentsFromEmails(emails, courses.filter(c => !c.deleted));
+
+      setExtractedAssignments(assignments);
+      setShowSyncModal(true);
+
+      // Update last sync time
+      setSyncSettings(prev => ({ ...prev, lastSyncTime: Date.now() }));
+    } catch (error: any) {
+      console.error('Sync failed:', error);
+      alert(`Failed to sync emails: ${error.message}`);
+    } finally {
+      setIsSyncing(false);
+    }
+  };
+
+  const handleImportAssignments = (assignments: ImportableAssignment[]) => {
+    const newTasks: Task[] = [];
+
+    assignments.forEach(assignment => {
+      if (!assignment.courseId) return;
+
+      const newTask: Task = {
+        id: generateId(),
+        courseId: assignment.courseId,
+        text: assignment.title,
+        description: assignment.description,
+        dueDate: assignment.dueDate || new Date().toISOString().split('T')[0],
+        completed: false,
+        groupId: assignment.groupId,
+        totalScore: assignment.points,
+      };
+
+      newTasks.push(newTask);
+    });
+
+    setTasks([...tasks, ...newTasks]);
+    setShowSyncModal(false);
+    setExtractedAssignments([]);
+
+    alert(`Successfully imported ${newTasks.length} assignment${newTasks.length !== 1 ? 's' : ''}!`);
   };
 
   // Wrapper for calculateCourseGrade to pass current state
@@ -458,11 +550,26 @@ function App() {
         onAddSemester={handleAddSemester}
         onEditSemester={handleEditSemester}
         getCourseGrade={getCourseGrade}
+        gmailAuth={gmailAuth}
+        onGmailAuthChange={handleGmailAuthChange}
+        onGmailSync={handleGmailSync}
+        isSyncing={isSyncing}
+        lastSyncTime={syncSettings.lastSyncTime}
       />
 
       <main className="main-content">
         {mainContent}
       </main>
+
+      {showSyncModal && (
+        <EmailSyncModal
+          assignments={extractedAssignments}
+          courses={courses.filter(c => !c.deleted)}
+          groups={assignmentGroups}
+          onImport={handleImportAssignments}
+          onClose={() => setShowSyncModal(false)}
+        />
+      )}
     </div>
   );
 }

@@ -16,7 +16,7 @@ interface SidebarProps {
     getCourseGrade?: (courseId: string) => number | undefined;
 }
 
-const COLORS = ['#FF6B6B', '#4ECDC4', '#FFE66D', '#FF9F1C', '#2EC4B6', '#E71D36', '#7209B7'];
+const COLORS = ['#FF6B6B', '#FFE66D', '#FF9F1C', '#2EC4B6', '#E71D36', '#7209B7'];
 
 export const Sidebar: React.FC<SidebarProps> = ({
     courses,
@@ -189,15 +189,25 @@ export const Sidebar: React.FC<SidebarProps> = ({
                             ))}
                         </select>
                     </div>
-                    <div className="color-picker">
-                        {COLORS.map(color => (
-                            <div
-                                key={color}
-                                className={`color-option ${editCourseColor === color ? 'selected' : ''}`}
-                                style={{ backgroundColor: color }}
-                                onClick={() => setEditCourseColor(color)}
-                            />
-                        ))}
+                    <div className="color-picker-group">
+                        <label>Color:</label>
+                        <div className="color-picker">
+                            {COLORS.map(color => (
+                                <div
+                                    key={color}
+                                    className={`color-option ${editCourseColor === color ? 'selected' : ''}`}
+                                    style={{ backgroundColor: color }}
+                                    onClick={() => setEditCourseColor(color)}
+                                />
+                            ))}
+                            <div className="custom-color-wrapper" title="Choose custom color">
+                                <input
+                                    type="color"
+                                    value={editCourseColor}
+                                    onChange={(e) => setEditCourseColor(e.target.value)}
+                                />
+                            </div>
+                        </div>
                     </div>
                     <div className="edit-actions">
                         <button type="button" className="delete-btn" onClick={(e) => handleDelete(e, course.id)}>Delete</button>
@@ -374,15 +384,25 @@ export const Sidebar: React.FC<SidebarProps> = ({
                                 ))}
                             </select>
                         </div>
-                        <div className="color-picker">
-                            {COLORS.map(color => (
-                                <div
-                                    key={color}
-                                    className={`color-option ${selectedColor === color ? 'selected' : ''}`}
-                                    style={{ backgroundColor: color }}
-                                    onClick={() => setSelectedColor(color)}
-                                />
-                            ))}
+                        <div className="color-picker-group">
+                            <label>Color:</label>
+                            <div className="color-picker">
+                                {COLORS.map(color => (
+                                    <div
+                                        key={color}
+                                        className={`color-option ${selectedColor === color ? 'selected' : ''}`}
+                                        style={{ backgroundColor: color }}
+                                        onClick={() => setSelectedColor(color)}
+                                    />
+                                ))}
+                                <div className="custom-color-wrapper" title="Choose custom color">
+                                    <input
+                                        type="color"
+                                        value={selectedColor}
+                                        onChange={(e) => setSelectedColor(e.target.value)}
+                                    />
+                                </div>
+                            </div>
                         </div>
                         <div className="add-actions">
                             <button type="button" onClick={() => setIsAdding(false)}>Cancel</button>

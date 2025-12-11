@@ -2,9 +2,15 @@
 
 A comprehensive grade tracking and course management application built with React, TypeScript, and Vite. Track your courses, assignments, grades, and notes all in one place with customizable grading scales, semester organization, and detailed analytics.
 
+[![Deploy Status](https://github.com/Aaron-bang/whats_my_grade/actions/workflows/deploy.yml/badge.svg)](https://github.com/Aaron-bang/whats_my_grade/actions/workflows/deploy.yml)
 ![React](https://img.shields.io/badge/React-19.2-61dafb?logo=react)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.9-3178c6?logo=typescript)
 ![Vite](https://img.shields.io/badge/Vite-7.2-646cff?logo=vite)
+
+## 🚀 [Live Demo](https://aaron-bang.github.io/whats_my_grade/)
+
+Try it out: **[https://aaron-bang.github.io/whats_my_grade/](https://aaron-bang.github.io/whats_my_grade/)**
+
 
 ## ✨ Features
 
@@ -101,7 +107,7 @@ A comprehensive grade tracking and course management application built with Reac
 1. **Clone the repository**:
    ```bash
    git clone https://github.com/Aaron-bang/whats_my_grade.git
-   cd whats-my-grade
+   cd whats_my_grade
    ```
 
 2. **Install dependencies**:

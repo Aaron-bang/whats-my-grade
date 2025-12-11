@@ -9,7 +9,7 @@ A comprehensive grade tracking and course management application built with Reac
 
 ## 🚀 [Live Demo](https://aaron-bang.github.io/whats_my_grade/)
 
-Try it out: **[https://aaron-bang.github.io/whats_my_grade/](https://aaron-bang.github.io/whats_my_grade/)**
+Try it out: **[https://aaron-bang.github.io/whats_my_grade/](https://github.com/Aaron-bang/whats-my-grade)**
 
 
 ## ✨ Features
